@@ -1,0 +1,9 @@
+export const STATUS = {
+  OFFLINE: 0,
+  ONLINE: 1,
+  WAITING_FOR_ACCEPT: 2,
+  ACCEPTED: 3,
+  ARRIVED: 4,
+  STARTED: 5,
+  COMPLETED: 6,
+};
