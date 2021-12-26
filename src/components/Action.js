@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import Text from './Text';
+import Image from './Image';
 
 const Action = ({icon, iconSize = 24, label, onPress}) => {
   return (
-    <TouchableOpacity style={{ flex: 1 }} onPress={() => onPress && onPress()}>
+    <TouchableOpacity onPress={() => onPress && onPress()}>
       <View style={styles.container}>
         <View style={styles.iconContainer}>
           <Image
@@ -22,7 +23,6 @@ export default Action;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
   },

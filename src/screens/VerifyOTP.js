@@ -1,41 +1,56 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   KeyboardAvoidingView,
   Keyboard,
   StyleSheet,
   View,
+  ScrollView,
   TouchableWithoutFeedback,
   Platform,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {Layout} from '@ui-kitten/components';
 import Button from '../components/Button';
 import Text from '../components/Text';
 import GhostButton from '../components/GhostButton';
 import Header from '../components/Header';
 import OTP from '../components/OTP';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import theme from '../constants/theme';
-
-import {verifySignup} from '../redux/actions/user';
+import t from '../i18n';
+import {verifyOTP} from '../redux/actions/user';
 
 const VerifyOTP = props => {
   const dispatch = useDispatch();
-  const {navigation, route} = props;
+  const {route} = props;
   const {phoneNumber, type} = route.params || {};
-  let [otp, setOTP] = useState('');
 
-  const handleVerifyOTP = async () => {
-    if (type === 'signup') {
-      // const result = dispatch(verifySignup(phoneNumber, otp));
-      // if (result) {
-      //   navigation.navigate('Personal');
-      // }
-      navigation.navigate('Registered');
-    } else if (type === 'forgot_password') {
-      navigation.navigate('NewPassword');
+  // const UserState = useSelector(state => state.User);
+  // const {isLoading, isFailed, errorMessage} = UserState.login;
+  let [otp, setOTP] = useState('1111');
+  let [isLoading, setLoading] = useState(false);
+  let [isFailed, setFailed] = useState(false);
+  let [errorMessage, setErrorMessage] = useState('');
+
+  const handleVerifyOTP = useCallback(async () => {
+    try {
+      setLoading(true);
+      setFailed(false);
+      setErrorMessage('');
+      await dispatch(verifyOTP(phoneNumber, otp, type));
+    } catch (error) {
+      console.log('error', error);
+      setFailed(true);
+      setErrorMessage(error.message);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [dispatch, otp, phoneNumber, type]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      handleVerifyOTP();
+    });
+  }, [handleVerifyOTP]);
 
   return (
     <>
@@ -45,26 +60,35 @@ const VerifyOTP = props => {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.container}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <SafeAreaView style={styles.content}>
+            <ScrollView style={styles.content}>
               <View>
-                <Text style={styles.greeting}>Phone Verification</Text>
-                <Text style={styles.title}>Enter your OTP code</Text>
-                <Text>{`Enter the 4-digit code sent to you at +84 ${phoneNumber}.`}</Text>
+                <Text style={styles.greeting}>{t('phone_verification')}</Text>
+                <Text style={styles.title}>{t('enter_your_otp_code')}</Text>
+                <Text>
+                  {t('phone_verification_description', {phoneNumber})}
+                </Text>
                 <View style={styles.formContainer}>
                   <View style={styles.otpContainer}>
                     <OTP
+                      value={otp}
                       autoFocus
                       isNumberInput
                       length={4}
                       onChangeOTP={setOTP}
                     />
+                    {isFailed && (
+                      <View>
+                        <View height={10} />
+                        <Text color={theme.color.error}>{errorMessage}</Text>
+                      </View>
+                    )}
                   </View>
                   <View>
                     <GhostButton>
                       <View>
                         <View style={styles.resendContainer}>
-                          <Text>Resend Code in </Text>
-                          <Text bold>10 seconds</Text>
+                          <Text>{t('resend_code_in')} </Text>
+                          <Text bold>{t('seconds', {seconds: 10})}</Text>
                         </View>
                       </View>
                     </GhostButton>
@@ -74,12 +98,13 @@ const VerifyOTP = props => {
               <View style={styles.footer}>
                 <Button
                   icon="arrow-forward-outline"
+                  isLoading={isLoading}
                   disabled={otp?.length < 4}
                   onPress={handleVerifyOTP}>
-                  Continue
+                  {t('continue')}
                 </Button>
               </View>
-            </SafeAreaView>
+            </ScrollView>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </Layout>
@@ -95,10 +120,8 @@ const styles = StyleSheet.create({
     paddingTop: theme.spacing.m,
   },
   content: {
-    flex: 1,
     paddingVertical: theme.color.l,
     paddingHorizontal: theme.spacing.m,
-    justifyContent: 'center',
   },
   title: {
     fontSize: 24,

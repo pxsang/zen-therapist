@@ -1,8 +1,16 @@
 import React from 'react';
-import {View, Image, StyleSheet, Dimensions, TouchableWithoutFeedback, Platform} from 'react-native';
-import theme from '../constants/theme';
+import {
+  View,
+  Image,
+  StyleSheet,
+  Dimensions,
+  TouchableWithoutFeedback,
+  Platform,
+} from 'react-native';
 import {Layout, Icon, Text} from '@ui-kitten/components';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import theme from '../constants/theme';
+import t from '../i18n';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -21,15 +29,22 @@ const Header = ({title, navigation}) => {
       <Layout style={{height: 200}}>
         <View style={styles.backgroundWrapper}>
           <View style={styles.backgroundContainer}>
-            <Image style={styles.backgroundImage} source={require('../assets/images/Background.png')} />
+            <Image
+              style={styles.backgroundImage}
+              source={require('../assets/images/Background.png')}
+            />
           </View>
         </View>
         <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
-          <View style={[styles.titleContent, { paddingTop: safeArea.top + 25, paddingHorizontal: 20 }]}>
+          <View
+            style={[
+              styles.titleContent,
+              {paddingTop: safeArea.top + 25, paddingHorizontal: 20},
+            ]}>
             <Icon
               style={styles.icon}
-              fill='#FFFFFF'
-              name='arrow-back-outline'
+              fill="#FFFFFF"
+              name="arrow-back-outline"
             />
             <Text style={styles.title}>{title}</Text>
           </View>
@@ -39,28 +54,29 @@ const Header = ({title, navigation}) => {
   }
 
   return (
-  <Layout style={{
-    paddingTop: safeArea.top,
-    backgroundColor: theme.color.primary,
-  }}>
-    <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
-      <View style={[styles.titleContent, { paddingHorizontal: 20, height: 60, alignItems: 'center' }]}>
-        <Icon
-          style={styles.icon}
-          fill='#FFFFFF'
-          name='arrow-back-outline'
-        />
-        <Text style={styles.title}>{title}</Text>
-      </View>
-    </TouchableWithoutFeedback>
-  </Layout>
+    <Layout
+      style={{
+        paddingTop: safeArea.top,
+        backgroundColor: theme.color.primary,
+      }}>
+      <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+        <View
+          style={[
+            styles.titleContent,
+            {paddingHorizontal: 20, height: 60, alignItems: 'center'},
+          ]}>
+          <Icon style={styles.icon} fill="#FFFFFF" name="arrow-back-outline" />
+          <Text style={styles.title}>{title}</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    </Layout>
   );
 };
 
 export default Header;
 
 Header.defaultProps = {
-  title: 'Back',
+  title: t('back'),
 };
 
 const styles = StyleSheet.create({

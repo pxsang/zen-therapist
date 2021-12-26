@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, Text, Dimensions, StyleSheet, Image} from 'react-native';
+import {View, Text, Dimensions, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Image from '../components/Image';
 import rewardsTheme from '../constants/theme';
 
 const {width} = Dimensions.get('screen');
@@ -12,10 +13,7 @@ const Slide = ({title, description, image}) => {
     <View style={styles.container(safeArea)}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
-      <Image
-        source={image}
-        style={styles.image}
-      />
+      <Image source={image} style={styles.image} />
     </View>
   );
 };

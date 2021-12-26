@@ -1,23 +1,41 @@
 import React, {useState, useRef} from 'react';
-import {StyleSheet, View, Image, TouchableWithoutFeedback, Keyboard} from 'react-native';
-import {Layout, Text, Icon} from '@ui-kitten/components';
+import {
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
+  Platform,
+} from 'react-native';
+import {Layout, Icon} from '@ui-kitten/components';
 import {useDispatch, useSelector} from 'react-redux';
 
 import Header from '../components/Header';
+import Text from '../components/Text';
 import Button from '../components/Button';
 import GhostButton from '../components/GhostButton';
 import Input from '../components/Input';
+import Image from '../components/Image';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import theme from '../constants/theme';
-
-import {login} from '../redux/actions/user';
+import {loginWithPassword} from '../redux/actions/user';
+import t from '../i18n';
+import {phoneValidator, convertTo0PhoneNumber} from '../helpers/display';
 
 const PhoneLogin = props => {
   const dispatch = useDispatch();
-  const App = useSelector(state => state.App);
+  const UserState = useSelector(state => state.User);
+  // const {
+  //   login: {isLoading, isFailed, errorMessage},
+  // } = UserState;
   const {navigation} = props;
   let [phoneNumber, setPhoneNumber] = useState('');
   let [password, setPassword] = useState('');
+
+  let [isLoading, setLoading] = useState(false);
+  let [isFailed, setFailed] = useState(false);
+  let [errorMessage, setErrorMessage] = useState('');
 
   const zoomIconRef = useRef();
 
@@ -27,7 +45,9 @@ const PhoneLogin = props => {
       ref={zoomIconRef}
       animation="zoom"
       name="checkmark-circle-2"
-      fill={phoneNumber?.length === 9 ? theme.color.primary : theme.color.gray}
+      fill={
+        phoneValidator(phoneNumber) ? theme.color.primary : theme.color.gray
+      }
     />
   );
 
@@ -41,62 +61,100 @@ const PhoneLogin = props => {
     </View>
   );
 
-  const handlePhoneLogin = () => {
-    // dispatch(login(phoneNumber, password));
-    navigation.navigate('Root');
+  const handlePhoneLogin = async () => {
+    try {
+      setLoading(true);
+      setFailed(false);
+      setErrorMessage('');
+      const result = await dispatch(
+        loginWithPassword(convertTo0PhoneNumber(`+84${phoneNumber}`), password),
+      );
+      console.log('result', result);
+    } catch (error) {
+      console.log('error', error);
+      setFailed(true);
+      setErrorMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderError = () => {
+    if (!isFailed) return null;
+
+    return (
+      <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 5}}>
+        <Icon
+          style={{
+            width: 24,
+            height: 24,
+            marginRight: 10,
+          }}
+          fill={theme.color.error}
+          name="alert-triangle-outline"
+        />
+        <Text color={theme.color.error}>{errorMessage}</Text>
+      </View>
+    );
   };
 
   return (
     <>
       <Header {...props} />
       <Layout style={[styles.container]}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.content}>
-            <View>
-              <Text style={styles.title}>Welcome back!</Text>
-              <View style={styles.formContainer}>
-                <Input
-                  keyboardType="phone-pad"
-                  value={phoneNumber}
-                  label="Phone number"
-                  placeholder="Enter your phone number"
-                  accessoryLeft={renderCountryCode}
-                  accessoryRight={renderCheckMarkIcon}
-                  onChangeText={nextValue => setPhoneNumber(nextValue)}
-                />
-                <View style={theme.block.marginTop(20)}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'height' : 'height'}
+          style={{flex: 1}}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView style={styles.content}>
+              <View>
+                <Text style={styles.title}>{t('login__greeting')}</Text>
+                <View style={styles.formContainer}>
                   <Input
-                    value={password}
-                    label="Password"
-                    placeholder="Enter your password"
-                    onChangeText={nextValue => setPassword(nextValue)}
-                    secureTextEntry
+                    keyboardType="phone-pad"
+                    value={phoneNumber}
+                    label={t('phone_number')}
+                    placeholder={t('enter_your_phone_number')}
+                    accessoryLeft={renderCountryCode}
+                    accessoryRight={renderCheckMarkIcon}
+                    onChangeText={nextValue => setPhoneNumber(nextValue)}
                   />
+                  <View style={theme.block.marginTop(20)}>
+                    <Input
+                      value={password}
+                      label={t('password')}
+                      status={isFailed ? 'danger' : 'basic'}
+                      caption={renderError()}
+                      placeholder={t('enter_your_password')}
+                      onChangeText={nextValue => setPassword(nextValue)}
+                      secureTextEntry
+                    />
+                  </View>
+                  <View style={theme.block.marginTop(20)}>
+                    <GhostButton
+                      onPress={() => navigation.navigate('ForgotPassword')}>
+                      {t('forgot_password')}
+                    </GhostButton>
+                  </View>
                 </View>
+              </View>
+              <View style={styles.footer}>
+                <Button
+                  isLoading={isLoading}
+                  disabled={!phoneValidator(phoneNumber)}
+                  icon="arrow-forward-outline"
+                  onPress={handlePhoneLogin}>
+                  {t('login')}
+                </Button>
                 <View style={theme.block.marginTop(20)}>
-                  <GhostButton
-                    onPress={() => navigation.navigate('ForgotPassword')}>
-                    Forgot password?
+                  <GhostButton onPress={() => navigation.navigate('SignUp')}>
+                    {t('or_create_my_account')}
                   </GhostButton>
                 </View>
               </View>
-            </View>
-            <View style={styles.footer}>
-              <Button
-                isLoading={App.login.isLoading}
-                // disabled={phoneNumber?.length !== 9}
-                icon="arrow-forward-outline"
-                onPress={handlePhoneLogin}>
-                Login
-              </Button>
-              <View style={theme.block.marginTop(20)}>
-                <GhostButton onPress={() => navigation.navigate('SignUp')}>
-                  Or Create My Account
-                </GhostButton>
-              </View>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
+            </ScrollView>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </Layout>
     </>
   );
@@ -109,10 +167,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    flex: 1,
     paddingHorizontal: theme.spacing.m,
     paddingVertical: theme.spacing.l,
-    justifyContent: 'center',
   },
   title: {
     fontSize: 24,

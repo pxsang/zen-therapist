@@ -1,30 +1,45 @@
-import React, {useState, useRef} from 'react';
-import {
-  KeyboardAvoidingView,
-  Keyboard,
-  StyleSheet,
-  View,
-  ScrollView,
-  Image,
-  TouchableWithoutFeedback,
-  Platform,
-} from 'react-native';
-import {Layout, Button as UIButton, CheckBox} from '@ui-kitten/components';
-import Button from '../components/Button';
+import React, {useEffect} from 'react';
+import {StyleSheet, View, ScrollView, RefreshControl} from 'react-native';
+import {Layout, CheckBox} from '@ui-kitten/components';
+import {useDispatch, useSelector} from 'react-redux';
 import Text from '../components/Text';
 import Header from '../components/Header';
 import theme from '../constants/theme';
+import t from '../i18n';
+import {getServices} from '../redux/actions/service';
+import {priceFormat} from '../helpers/display';
 
 const MassageOffered = props => {
+  const dispatch = useDispatch();
+  const ServiceState = useSelector(state => state.Service);
+  const UserState = useSelector(state => state.User);
+  const {available_services} = UserState.userInfo;
+  const {isLoading, services} = ServiceState;
+
+  useEffect(() => {
+    dispatch(getServices());
+  }, []);
+
   return (
     <>
-      <Header {...props} title="Choose service to provide" />
+      <Header {...props} title={t('massage_offered')} />
       <Layout style={[styles.container]}>
         <ScrollView
-          showsVerticalScrollIndicator={false}
-        >
-          {OFFEREDS.map(_ => (
-            <OfferedItem data={_} />
+          refreshControl={
+            <RefreshControl
+              colors={[theme.color.primary]}
+              tintColor={theme.color.primary}
+              refreshing={isLoading}
+              onRefresh={() => dispatch(getServices())}
+            />
+          }
+          showsVerticalScrollIndicator={false}>
+          {services.map(_ => (
+            <OfferedItem
+              key={_.id}
+              data={_}
+              availableServices={available_services}
+            />
           ))}
         </ScrollView>
       </Layout>
@@ -43,57 +58,51 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 30,
   },
-  checkbox: {
+  itemContainer: {
+    marginBottom: 20,
+  },
+  itemHeaderContainer: {
+    backgroundColor: theme.color.border,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  itemChildContainer: {
+    paddingVertical: 10,
+  },
+  itemChild: {
+    paddingVertical: 10,
+  },
+  itemSeparator: {
+    width: 2,
+    height: 2,
+    backgroundColor: theme.color.primary,
+    borderRadius: 1,
+    marginHorizontal: 5,
   },
 });
 
-const OfferedItem = ({data}) => {
-  const {name, childs} = data;
+const OfferedItem = ({data, availableServices}) => {
+  const {name, sub_services} = data;
+  const checked = availableServices.some(_ => _.id === data.id);
+
   return (
-    <View style={{
-      marginBottom: 20,
-    }}>
-      <View style={{
-        backgroundColor: theme.color.border,
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-      }}>
+    <View style={styles.itemContainer}>
+      <View style={styles.itemHeaderContainer}>
         <Text bold>{name}</Text>
       </View>
-      <View style={{
-        paddingVertical: 10,
-      }}>
-        {childs.map(({id, name: childName, time, price}) => (
-          <View key={id} style={{
-            paddingVertical: 10,
-          }}>
+      <View style={styles.itemChildContainer}>
+        {sub_services.map(({id, name: childName, duration, price}) => (
+          <View key={id} style={styles.itemChild}>
             <CheckBox
+              checked={checked}
               style={styles.checkbox}
               status="primary">
-              <View style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                }}>
+              <View style={theme.block.rowMiddleCenter}>
                 <Text>{childName}</Text>
-                {childName && (
-                  <View style={{
-                    width: 2,
-                    height: 2,
-                    backgroundColor: theme.color.primary,
-                    borderRadius: 1,
-                    marginHorizontal: 5,
-                  }} />
-                )}
-                <Text>{time} mins</Text>
-                <View style={{
-                  width: 2,
-                  height: 2,
-                  backgroundColor: theme.color.primary,
-                  borderRadius: 1,
-                  marginHorizontal: 5,
-                }} />
-                <Text>{price}</Text>
+                {childName && <View style={styles.itemSeparator} />}
+                <Text>{t('min', {min: duration})}</Text>
+                <View style={styles.itemSeparator} />
+                <Text>{priceFormat(price)}</Text>
               </View>
             </CheckBox>
           </View>
@@ -102,115 +111,3 @@ const OfferedItem = ({data}) => {
     </View>
   );
 };
-
-const OFFEREDS = [
-  {
-    id: 1,
-    name: 'Thai or Swedish',
-    childs: [
-      {
-        id: 1,
-        time: 60,
-        price: 380000,
-      },
-      {
-        id: 2,
-        time: 90,
-        price: 500000,
-      },
-      {
-        id: 3,
-        time: 120,
-        price: 700000,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Soothing Aroma Massage',
-    childs: [
-      {
-        id: 1,
-        time: 60,
-        price: 480000,
-      },
-      {
-        id: 2,
-        time: 90,
-        price: 600000,
-      },
-      {
-        id: 3,
-        time: 120,
-        price: 800000,
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: 'Hot Stone Massage',
-    childs: [
-      {
-        id: 1,
-        time: 60,
-        price: 430000,
-      },
-      {
-        id: 2,
-        time: 90,
-        price: 550000,
-      },
-      {
-        id: 3,
-        time: 120,
-        price: 750000,
-      },
-    ],
-  },
-  {
-    id: 4,
-    name: 'Full Body Coconut Oil Massage',
-    childs: [
-      {
-        id: 1,
-        time: 60,
-        price: 500000,
-      },
-      {
-        id: 2,
-        time: 90,
-        price: 620000,
-      },
-    ],
-  },
-  {
-    id: 5,
-    name: 'Foot Massage',
-    childs: [
-      {
-        id: 1,
-        name: 'Foot Relax',
-        time: 30,
-        price: 200000,
-      },
-      {
-        id: 2,
-        name: 'Foot Relax',
-        time: 60,
-        price: 360000,
-      },
-      {
-        id: 3,
-        name: 'Foot/Back/Shoulder',
-        time: 30,
-        price: 380000,
-      },
-      {
-        id: 4,
-        name: 'Foot/Back/Shoulder',
-        time: 60,
-        price: 500000,
-      },
-    ],
-  },
-];

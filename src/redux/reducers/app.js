@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Immutable from 'seamless-immutable';
+import {getCurrentLocale} from '../../i18n';
 
 const saveFirstTime = async value => {
   try {
@@ -8,32 +10,18 @@ const saveFirstTime = async value => {
   }
 };
 
-const INIT_STATE = {
+const INIT_STATE = Immutable({
   isFirstTime: true,
-  isLoggedIn: undefined,
-  login: {
-    isLoading: false,
-    isFailed: false,
-    errorMessage: '',
-  },
-};
+  language: getCurrentLocale(),
+});
 
 export default (state = INIT_STATE, action) => {
   switch (action.type) {
     case 'APP/SET_FIRST_TIME':
       saveFirstTime(action.data);
-      return {
-        ...state,
-        isFirstTime: action.data,
-      };
-    case 'APP/LOGIN_REQUEST':
-      return {
-        ...state,
-        login: {
-          ...state.login,
-          isLoading: true,
-        },
-      };
+      return state.set('isFirstTime', action.data);
+    case 'APP/SWITCH_LANGUAGE':
+      return state.set('language', action.data);
     default:
       return state;
   }

@@ -1,24 +1,46 @@
-import React, {useState, useRef} from 'react';
-import {StyleSheet, View, Image, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform} from 'react-native';
+import React, {useState, useRef, useEffect} from 'react';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
+} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Layout, Icon} from '@ui-kitten/components';
 import Button from '../components/Button';
 import Text from '../components/Text';
+import Image from '../components/Image';
 import GhostButton from '../components/GhostButton';
 import Input from '../components/Input';
 import Header from '../components/Header';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import theme from '../constants/theme';
-
 import {signup} from '../redux/actions/user';
+import {phoneValidator, convertTo0PhoneNumber} from '../helpers/display';
+import t from '../i18n';
 
 const SignUp = props => {
   const dispatch = useDispatch();
-  const User = useSelector(state => state.User);
+  // const UserState = useSelector(state => state.User);
+  // const {isLoading, isSuccessful, isFailed, errorMessage} = UserState.signup;
   const {navigation} = props;
   let [phoneNumber, setPhoneNumber] = useState('');
+  let [isLoading, setLoading] = useState(false);
+  let [isFailed, setFailed] = useState(false);
+  let [errorMessage, setErrorMessage] = useState('');
 
   const zoomIconRef = useRef();
+
+  // useEffect(() => {
+  //   if (isSuccessful) {
+  //     navigation.navigate('VerifyOTP', {
+  //       type: 'signup',
+  //       phoneNumber: convertTo0PhoneNumber(`+84${phoneNumber}`),
+  //     });
+  //   }
+  // }, [isSuccessful, navigation, phoneNumber]);
 
   const renderCheckMarkIcon = iconProps => (
     <Icon
@@ -26,7 +48,9 @@ const SignUp = props => {
       ref={zoomIconRef}
       animation="zoom"
       name="checkmark-circle-2"
-      fill={phoneNumber?.length === 9 ? theme.color.primary : theme.color.gray}
+      fill={
+        phoneValidator(phoneNumber) ? theme.color.primary : theme.color.gray
+      }
     />
   );
 
@@ -41,11 +65,38 @@ const SignUp = props => {
   );
 
   const handleSignup = async () => {
-    // const result = await dispatch(signup(phoneNumber));
-    // if (result) {
-    //   navigation.navigate('VerifyOTP', {type: 'signup', phoneNumber});
-    // }
-    navigation.navigate('VerifyOTP', {type: 'signup', phoneNumber});
+    try {
+      await dispatch(signup(convertTo0PhoneNumber(`+84${phoneNumber}`)));
+      navigation.navigate('VerifyOTP', {
+        type: 'signup',
+        phoneNumber: convertTo0PhoneNumber(`+84${phoneNumber}`),
+      });
+    } catch (error) {
+      console.log('error', error);
+      setFailed(true);
+      setErrorMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderError = () => {
+    if (!isFailed) return null;
+
+    return (
+      <View>
+        <View height={5} />
+        <View style={theme.block.rowMiddle}>
+          <Icon
+            style={styles.errorIcon}
+            fill={theme.color.error}
+            name="alert-triangle-outline"
+          />
+          <View width={10} />
+          <Text color={theme.color.error}>{errorMessage}</Text>
+        </View>
+      </View>
+    );
   };
 
   return (
@@ -56,31 +107,31 @@ const SignUp = props => {
           behavior={Platform.OS === 'ios' ? 'height' : 'height'}
           style={[styles.container]}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.content}>
+            <ScrollView style={styles.content}>
               <View>
-                <Text style={styles.greeting}>Hello, nice to meet you!</Text>
-                <Text style={styles.title}>Join our top-notch therapists!</Text>
+                <Text style={styles.greeting}>{t('sign_up__greeting')}</Text>
+                <Text style={styles.title}>{t('sign_up__description')}</Text>
                 <View style={styles.formContainer}>
                   <Input
                     keyboardType="phone-pad"
                     value={phoneNumber}
-                    label="Phone number"
-                    placeholder="Enter your phone number"
-                    caption={User.signUp.isFailed ? User.signUp.errorMessage : ''}
+                    label={t('phone_number')}
+                    placeholder={t('enter_your_phone_number')}
+                    status={isFailed ? 'danger' : 'basic'}
+                    caption={renderError()}
                     accessoryLeft={renderCountryCode}
                     accessoryRight={renderCheckMarkIcon}
                     onChangeText={nextValue => setPhoneNumber(nextValue)}
                   />
-                  <View style={{ marginTop: 20 }}>
-                    <GhostButton>
-                      <View>
-                        <Text>By creating an account, you agree to our</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                          <Text bold>Terms of Service</Text>
-                          <Text> and </Text>
-                          <Text bold>Privacy Policy</Text>
-                        </View>
-                      </View>
+                  <View height={20} />
+                  <View>
+                    <GhostButton onPress={() => navigation.navigate('Terms')}>
+                      <Text>
+                        <Text>{t('sign_up__condition')}</Text>
+                        <Text bold> {t('terms_of_service')}</Text>
+                        <Text> {t('and')} </Text>
+                        <Text bold>{t('privacy_policy')}</Text>
+                      </Text>
                     </GhostButton>
                   </View>
                 </View>
@@ -88,12 +139,13 @@ const SignUp = props => {
               <View style={styles.footer}>
                 <Button
                   icon="arrow-forward-outline"
-                  disabled={phoneNumber?.length < 9}
+                  isLoading={isLoading}
+                  disabled={!phoneValidator(phoneNumber)}
                   onPress={handleSignup}>
-                  Continue
+                  {t('continue')}
                 </Button>
               </View>
-            </View>
+            </ScrollView>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </Layout>
@@ -108,10 +160,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    flex: 1,
     paddingHorizontal: theme.spacing.m,
     paddingVertical: theme.spacing.l,
-    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
@@ -138,5 +188,9 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 18,
     color: theme.color.primary,
+  },
+  errorIcon: {
+    width: 24,
+    height: 24,
   },
 });

@@ -1,16 +1,16 @@
 import React, {useRef} from 'react';
-import {StyleSheet, View, Image, Dimensions} from 'react-native';
+import {StyleSheet, View, Dimensions} from 'react-native';
 import {useDispatch} from 'react-redux';
 import Slide from '../components/Slide';
+import Image from '../components/Image';
 import Button from '../components/Button';
 import Dot from '../components/Dot';
-import Text from '../components/Text';
 import {useValue, onScrollEvent} from 'react-native-redash/lib/module/v1';
 import Animated, {divide, multiply} from 'react-native-reanimated';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import theme from '../constants/theme';
-
 import {setFirstTime} from '../redux/actions/app';
+import t from '../i18n';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -43,12 +43,20 @@ const Splash = props => {
             bounces={false}
             {...{onScroll}}>
             {slides.map(({title, description, image}, index) => (
-              <Slide key={index} title={title} description={description} image={image} />
+              <Slide
+                key={index}
+                title={title}
+                description={description}
+                image={image}
+              />
             ))}
           </Animated.ScrollView>
         </Animated.View>
-        <View style={{ top: -40, alignItems: 'center' }}>
-          <Image source={require('../assets/images/logo-1.png')} style={{ width: 160, height: 160 }} />
+        <View style={{top: -40, alignItems: 'center'}}>
+          <Image
+            source={require('../assets/images/logo-1.png')}
+            style={{width: 160, height: 160}}
+          />
         </View>
       </View>
       <View style={[styles.footer]}>
@@ -76,8 +84,7 @@ const Splash = props => {
                   icon="arrow-forward-outline"
                   onPress={async () => {
                     if (last) {
-                      // dispatch(setFirstTime(false));
-                      props.navigation.navigate('Auth');
+                      dispatch(setFirstTime(false));
                       return;
                     }
                     if (scroll.current) {
@@ -87,7 +94,7 @@ const Splash = props => {
                       });
                     }
                   }}>
-                  {last ? "Let's get Stated" : 'Next'}
+                  {last ? t('lets_get_stated') : t('next')}
                 </Button>
               </View>
             );
@@ -160,18 +167,18 @@ const styles = StyleSheet.create({
 
 const slides = [
   {
-    title: 'Be Your Own Boss',
-    description: 'Maximize your earning potential!',
+    title: t('splash_1__title'),
+    description: t('splash_1__description'),
     image: require('../assets/images/splash-1.png'),
   },
   {
-    title: 'Enjoy Reward System',
-    description: 'Achieve greater heights!',
+    title: t('splash_2__title'),
+    description: t('splash_2__description'),
     image: require('../assets/images/splash-2.png'),
   },
   {
-    title: 'Refer A Friend',
-    description: 'Get a bonus of 200,000d',
+    title: t('splash_3__title'),
+    description: t('splash_3__description'),
     image: require('../assets/images/splash-3.png'),
   },
 ];

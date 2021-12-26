@@ -1,26 +1,46 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   KeyboardAvoidingView,
   Keyboard,
   Platform,
+  ScrollView,
   TouchableWithoutFeedback,
   StyleSheet,
   View,
-  Image,
 } from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {Layout, Icon} from '@ui-kitten/components';
 import Button from '../components/Button';
 import Text from '../components/Text';
+import Image from '../components/Image';
 import GhostButton from '../components/GhostButton';
 import Input from '../components/Input';
 import theme from '../constants/theme';
 import Header from '../components/Header';
+import t from '../i18n';
+import {forgotPassword} from '../redux/actions/user';
+import {phoneValidator, convertTo0PhoneNumber} from '../helpers/display';
 
 const ForgotPassword = props => {
+  const dispatch = useDispatch();
+  // const UserState = useSelector(state => state.User);
+  // const {isLoading, isSuccessful, isFailed, errorMessage} = UserState.forgotPassword;
   const {navigation} = props;
   let [phoneNumber, setPhoneNumber] = useState('');
+  let [isLoading, setLoading] = useState(false);
+  let [isFailed, setFailed] = useState(false);
+  let [errorMessage, setErrorMessage] = useState('');
 
   const zoomIconRef = useRef();
+
+  // useEffect(() => {
+  //   if (isSuccessful) {
+  //     navigation.navigate('VerifyOTP', {
+  //       type: 'forgot_password',
+  //       phoneNumber: convertTo0PhoneNumber(`+84${phoneNumber}`),
+  //     });
+  //   }
+  // }, [isSuccessful, navigation, phoneNumber]);
 
   const renderCheckMarkIcon = iconProps => (
     <Icon
@@ -28,7 +48,9 @@ const ForgotPassword = props => {
       ref={zoomIconRef}
       animation="zoom"
       name="checkmark-circle-2"
-      fill={phoneNumber?.length === 9 ? theme.color.primary : theme.color.gray}
+      fill={
+        phoneValidator(phoneNumber) ? theme.color.primary : theme.color.gray
+      }
     />
   );
 
@@ -42,6 +64,47 @@ const ForgotPassword = props => {
     </View>
   );
 
+  const handleForgotPassword = async () => {
+    try {
+      setLoading(true);
+      setFailed(false);
+      setErrorMessage('');
+      await dispatch(
+        forgotPassword(convertTo0PhoneNumber(`+84${phoneNumber}`)),
+      );
+
+      navigation.navigate('VerifyOTP', {
+        type: 'forgot_password',
+        phoneNumber: convertTo0PhoneNumber(`+84${phoneNumber}`),
+      });
+    } catch (error) {
+      console.log(error);
+      setFailed(true);
+      setErrorMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderError = () => {
+    if (!isFailed) return null;
+
+    return (
+      <View>
+        <View height={5} />
+        <View style={theme.block.rowMiddle}>
+          <Icon
+            style={styles.errorIcon}
+            fill={theme.color.error}
+            name="alert-triangle-outline"
+          />
+          <View width={10} />
+          <Text color={theme.color.error}>{errorMessage}</Text>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <>
       <Header {...props} />
@@ -50,16 +113,18 @@ const ForgotPassword = props => {
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={[styles.container]}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.content}>
+            <ScrollView style={styles.content}>
               <View>
-                <Text style={styles.greeting}>Forgot Password?!</Text>
-                <Text style={styles.title}>Don’t worry!</Text>
+                <Text style={styles.greeting}>{t('forgot_password')}</Text>
+                <Text style={styles.title}>{t('dont_worry')}</Text>
                 <View style={styles.formContainer}>
                   <Input
                     keyboardType="phone-pad"
                     value={phoneNumber}
-                    label="Phone number"
-                    placeholder="Enter your phone number"
+                    label={t('phone_number')}
+                    placeholder={t('enter_your_phone_number')}
+                    status={isFailed ? 'danger' : 'basic'}
+                    caption={renderError()}
                     accessoryLeft={renderCountryCode}
                     accessoryRight={renderCheckMarkIcon}
                     onChangeText={nextValue => setPhoneNumber(nextValue)}
@@ -69,8 +134,9 @@ const ForgotPassword = props => {
                       onPress={() => navigation.navigate('PhoneLogin')}>
                       <View>
                         <View style={styles.row}>
-                          <Text>No problem? </Text>
-                          <Text bold>Sign In</Text>
+                          <Text>{t('no_problem')}</Text>
+                          <View width={5} />
+                          <Text bold>{t('sign_in')}</Text>
                         </View>
                       </View>
                     </GhostButton>
@@ -79,18 +145,14 @@ const ForgotPassword = props => {
               </View>
               <View style={styles.footer}>
                 <Button
+                  isLoading={isLoading}
                   icon="arrow-forward-outline"
-                  disabled={phoneNumber?.length < 9}
-                  onPress={() =>
-                    navigation.navigate('VerifyOTP', {
-                      phoneNumber,
-                      type: 'forgot_password',
-                    })
-                  }>
-                  Continue
+                  disabled={!phoneValidator(phoneNumber)}
+                  onPress={handleForgotPassword}>
+                  {t('continue')}
                 </Button>
               </View>
-            </View>
+            </ScrollView>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </Layout>
@@ -105,9 +167,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    flex: 1,
     paddingHorizontal: theme.spacing.m,
-    justifyContent: 'center',
+    paddingVertical: theme.spacing.l,
   },
   title: {
     fontSize: 24,
@@ -140,5 +201,9 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+  },
+  errorIcon: {
+    width: 24,
+    height: 24,
   },
 });

@@ -1,12 +1,16 @@
 import React from 'react';
 import {StyleSheet, View, Image} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {Layout} from '@ui-kitten/components';
 import Text from '../components/Text';
 import Button from '../components/Button';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import theme from '../constants/theme';
+import t from '../i18n';
+import {registered} from '../redux/actions/user';
 
 const Registered = props => {
+  const dispatch = useDispatch();
   const {navigation} = props;
 
   return (
@@ -14,12 +18,10 @@ const Registered = props => {
       <SafeAreaView style={styles.content}>
         <View>
           <Text bold style={styles.title}>
-            Thank you!
+            {t('thank_you')}
           </Text>
           <Text light style={styles.description}>
-            {
-              'Thank you for registering with zen. Please complete your registration and be activated by visiting our office.'
-            }
+            {t('registered_description')}
           </Text>
           <View style={styles.imageWrapper}>
             <View style={styles.imageContainer}>
@@ -31,7 +33,14 @@ const Registered = props => {
           </View>
         </View>
         <View style={styles.footer}>
-          <Button icon="arrow-forward-outline" onPress={() => navigation.navigate('Root')}>Go to Profile</Button>
+          <Button
+            icon="arrow-forward-outline"
+            onPress={() => {
+              dispatch(registered());
+              navigation.navigate('Dashboard');
+            }}>
+            {t('go_to_profile')}
+          </Button>
         </View>
       </SafeAreaView>
     </Layout>

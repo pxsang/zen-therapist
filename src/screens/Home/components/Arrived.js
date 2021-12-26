@@ -1,26 +1,34 @@
 import React from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {Button} from '@ui-kitten/components';
 import Text from '../../../components/Text';
+import Image from '../../../components/Image';
 import theme from '../../../constants/theme';
+import t from '../../../i18n';
 
-const Arrived = ({onStatusChange}) => {
+const Arrived = ({sessionDetail, onStart}) => {
   return (
     <View>
       <View style={[theme.block.rowMiddleCenter, theme.block.marginBottom(10)]}>
         <Text bold size={16}>
-          45 min
+          {t('min', {min: sessionDetail?.request_services[0]?.duration})}
         </Text>
         <Image
           style={styles.avatar}
-          source={require('../../../assets/icons/user-avatar.png')}
+          source={
+            sessionDetail?.customer?.avatar
+              ? {uri: sessionDetail.customer.avatar}
+              : require('../../../assets/icons/user-avatar.png')
+          }
         />
       </View>
       <Text center size={12} color={theme.color.gray}>
-        Massage in-session for Cecilia Bolocco
+        {t('massage_in_session_for', {name: sessionDetail?.customer?.name})}
       </Text>
       <View style={styles.buttonContainer}>
-        <Button style={styles.button} onPress={onStatusChange}>Start</Button>
+        <Button style={styles.button} onPress={onStart}>
+          {t('start')}
+        </Button>
       </View>
     </View>
   );

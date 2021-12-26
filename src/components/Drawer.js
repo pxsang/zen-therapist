@@ -1,30 +1,48 @@
 import React from 'react';
-import {View, Image, TouchableWithoutFeedback, StyleSheet} from 'react-native';
-import {Drawer as UIDrawer, DrawerItem, IndexPath} from '@ui-kitten/components';
+import {View, TouchableWithoutFeedback, StyleSheet} from 'react-native';
+import {Drawer as UIDrawer, DrawerItem} from '@ui-kitten/components';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useSelector} from 'react-redux';
 import Text from './Text';
+import UserAvatar from './UserAvatar';
 import theme from '../constants/theme';
+import t from '../i18n';
 
 const Drawer = ({navigation, state}) => {
+  const UserState = useSelector(_ => _.User);
   const safeArea = useSafeAreaInsets();
+  const {userInfo} = UserState;
+
+  const getGreeting = () => {
+    const hours = new Date().getHours();
+
+    if (hours < 12) {
+      return 'Good morning,';
+    }
+
+    return 'Good afternoon,';
+  };
+
+  if (!userInfo) return null;
 
   return (
     <UIDrawer
-      // selectedIndex={new IndexPath(state.index)}
-      onSelect={index => navigation.navigate(state.routeNames[index.row])}
       appearance="noDivider"
       header={() => (
         <TouchableWithoutFeedback
-          onPress={() => navigation.navigate('Profile')}>
+          onPress={() => {
+            navigation.closeDrawer();
+            navigation.navigate('Profile');
+          }}>
           <View style={styles.headerContainer(safeArea)}>
-            <Image
-              style={styles.avatar}
-              source={require('../assets/icons/user-avatar.png')}
-            />
-            <View>
-              <Text size={12}>Good morning,</Text>
-              <Text bold size={24}>
-                Poppet Celdran
+            <UserAvatar style={styles.avatar} />
+            <View
+              style={{
+                flex: 1,
+              }}>
+              <Text size={12}>{getGreeting()}</Text>
+              <Text bold size={24} numberOfLines={1}>
+                {userInfo?.name}
               </Text>
             </View>
           </View>
@@ -33,16 +51,16 @@ const Drawer = ({navigation, state}) => {
       footer={() => (
         <View style={styles.footerContainer(safeArea)}>
           <Text bold size={12} color={theme.color.gray}>
-            Do more
+            {t('do_more')}
           </Text>
           <Text style={styles.footerItem} size={12} color={theme.color.gray}>
-            Make money giving therapeutic massage.
+            {t('make_money_giving_therapeutic_massage')}
           </Text>
           <Text style={styles.footerItem} size={12} color={theme.color.gray}>
-            Refer a certified massage therapist.
+            {t('refer_a_certified_massage_therapist')}
           </Text>
           <Text style={styles.footerItem} size={12} color={theme.color.gray}>
-            Rate us on store.
+            {t('rate_us_on_store')}
           </Text>
           <Text style={styles.footerItem} size={12} color={theme.color.gray}>
             ZenAppPro.com
@@ -52,42 +70,57 @@ const Drawer = ({navigation, state}) => {
       <DrawerItem
         title={
           <Text bold size={24}>
-            Payment History
+            {t('payment_history')}
           </Text>
         }
-        onPress={() => navigation.navigate('PaymentHistory')}
+        onPress={() => {
+          navigation.closeDrawer();
+          navigation.navigate('PaymentHistory');
+        }}
       />
       <DrawerItem
         title={
           <Text bold size={24}>
-            Session History
+            {t('session_history')}
           </Text>
         }
-        onPress={() => navigation.navigate('SessionHistory')}
+        onPress={() => {
+          navigation.closeDrawer();
+          navigation.navigate('SessionHistory');
+        }}
       />
       <DrawerItem
         title={
           <Text bold size={24}>
-            Massage Offered
+            {t('massage_offered')}
           </Text>
         }
-        onPress={() => navigation.navigate('MassageOffered')}
+        onPress={() => {
+          navigation.closeDrawer();
+          navigation.navigate('MassageOffered');
+        }}
       />
       <DrawerItem
         title={
           <Text bold size={24}>
-            Settings
+            {t('settings')}
           </Text>
         }
-        onPress={() => navigation.navigate('Settings')}
+        onPress={() => {
+          navigation.closeDrawer();
+          navigation.navigate('Settings');
+        }}
       />
       <DrawerItem
         title={
           <Text bold size={24}>
-            Support
+            {t('support')}
           </Text>
         }
-        onPress={() => navigation.navigate('Support')}
+        onPress={() => {
+          navigation.closeDrawer();
+          navigation.navigate('Support');
+        }}
       />
     </UIDrawer>
   );

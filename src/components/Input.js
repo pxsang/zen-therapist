@@ -10,7 +10,7 @@ const Input = ({label, value = '', ...other}) => {
       value={value}
       label={<Text style={styles.label}>{label}</Text>}
       style={styles.input}
-      textStyle={!value.length ? styles.placeholder : styles.text}
+      textStyle={!value?.length ? styles.placeholder : styles.text}
     />
   );
 };

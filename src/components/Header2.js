@@ -1,43 +1,44 @@
 import React from 'react';
 import {
   View,
-  Image,
   StyleSheet,
   Dimensions,
   TouchableWithoutFeedback,
 } from 'react-native';
 import theme from '../constants/theme';
 import {Layout, Icon} from '@ui-kitten/components';
-import Text from '../components/Text';
+import UserAvatar from '../components/UserAvatar';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 const {width} = Dimensions.get('screen');
 
 const Header2 = () => {
   const safeArea = useSafeAreaInsets();
   const navigation = useNavigation();
+  const UserState = useSelector(state => state.User);
+  const {userInfo} = UserState;
 
   return (
     <Layout style={styles.container(safeArea)}>
       <View style={styles.contentContainer}>
         <View style={theme.block.rowMiddle}>
           <TouchableWithoutFeedback onPress={() => navigation.openDrawer()}>
-            <Icon style={styles.drawerIcon} name="menu-outline" fill="#000" />
+            <View style={{padding: 5}}>
+              <Icon style={styles.drawerIcon} name="menu-outline" fill="#000" />
+            </View>
           </TouchableWithoutFeedback>
-          <Text bold color={theme.color.primary}>
+          {/* <Text bold color={theme.color.primary}>
             VND
           </Text>
           <Text bold size={25} style={styles.earned}>
             912,000
-          </Text>
+          </Text> */}
         </View>
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate('Profile')}>
-          <Image
-            style={styles.avatar}
-            source={require('../assets/icons/user-avatar.png')}
-          />
+          <UserAvatar style={styles.avatar} />
         </TouchableWithoutFeedback>
       </View>
     </Layout>

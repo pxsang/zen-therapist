@@ -7,7 +7,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
 import SplashScreen from '../screens/Splash';
+import LoadingScreen from '../screens/Loading';
 import {setFirstTime} from '../redux/actions/app';
+import {getProfile} from '../redux/actions/user';
 
 export default () => {
   const dispatch = useDispatch();
@@ -30,30 +32,49 @@ export default () => {
         console.log(e);
       }
     })();
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (User.loggedIn) {
+      dispatch(getProfile());
+    }
+  }, [User.loggedIn, dispatch]);
 
   if (!loaded) return null;
 
   return (
     <NavigationContainer>
-      <RootNavigator isFirstTime={App.isFirstTime} loggedIn={User.loggedIn} />
+      <RootNavigator
+        isFirstTime={App.isFirstTime}
+        loggedIn={User.loggedIn}
+        sessionStarted={User.sessionStarted}
+      />
     </NavigationContainer>
   );
 };
 
 const Stack = createStackNavigator();
 
-const RootNavigator = ({isFirstTime, loggedIn}) => (
-  <Stack.Navigator
-    screenOptions={{
-      headerShown: false,
-    }}>
-    {/* {isFirstTime ? ( */}
-      <Stack.Screen name="Splash" component={SplashScreen} />
-    {/* ) : !loggedIn ? ( */}
-      <Stack.Screen name="Auth" component={AuthNavigator} />
-    {/* ) : ( */}
-      <Stack.Screen name="Root" component={MainNavigator} />
-    {/* )} */}
-  </Stack.Navigator>
-);
+const RootNavigator = ({isFirstTime, loggedIn, sessionStarted}) => {
+  const renderScreen = () => {
+    if (isFirstTime) {
+      return <Stack.Screen name="Splash" component={SplashScreen} />;
+    }
+    if (!loggedIn) {
+      return <Stack.Screen name="Auth" component={AuthNavigator} />;
+    } else if (!sessionStarted) {
+      return <Stack.Screen name="Loading" component={LoadingScreen} />;
+    } else {
+      return <Stack.Screen name="Root" component={MainNavigator} />;
+    }
+  };
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      {renderScreen()}
+    </Stack.Navigator>
+  );
+};

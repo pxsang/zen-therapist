@@ -1,45 +1,61 @@
 import React from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {Button} from '@ui-kitten/components';
+import Image from '../../../components/Image';
 import Text from '../../../components/Text';
 import Action from '../../../components/Action';
 import theme from '../../../constants/theme';
+import t from '../../../i18n';
+import {shortMoney} from '../../../helpers/display';
 
-import {STATUS} from '../../../constants/Constants';
-
-const Accepted = ({onStatusChange}) => {
+const Accepted = ({sessionDetail, onArrive, onReject}) => {
   return (
     <View>
       <View style={[theme.block.rowMiddleCenter, theme.block.marginBottom(10)]}>
         <Text bold size={16}>
-          2 min
+          {t('min', {min: sessionDetail?.request_services[0]?.duration})}
         </Text>
         <Image
           style={styles.avatar}
-          source={require('../../../assets/icons/user-avatar.png')}
+          source={
+            sessionDetail?.customer?.avatar
+              ? {uri: sessionDetail.customer.avatar}
+              : require('../../../assets/icons/user-avatar.png')
+          }
         />
         <Text bold size={16}>
-          0.5 mi
+          {shortMoney(sessionDetail?.total_amount)}
         </Text>
       </View>
       <Text center size={12} color={theme.color.gray}>
-        On the way to Cecilia Bolocco
+        {t('on_the_way_to')}
       </Text>
       <View style={[theme.block.rowLeft, theme.block.marginTop(20)]}>
-        <Action icon={require('../../../assets/icons/chat.png')} label="Chat" />
-        <Action
-          icon={require('../../../assets/icons/message.png')}
-          label="Message"
-        />
-        <Action
-          icon={require('../../../assets/icons/cancel.png')}
-          iconSize={12}
-          label="Cancel Booking"
-          onPress={() => onStatusChange(STATUS.OFFLINE)}
-        />
+        {/* <View style={styles.actionContainer}>
+          <Action
+            icon={require('../../../assets/icons/chat.png')}
+            label={t('chat')}
+          />
+        </View>
+        <View style={styles.actionContainer}>
+          <Action
+            icon={require('../../../assets/icons/message.png')}
+            label={t('message')}
+          />
+        </View> */}
+        <View style={styles.actionContainer}>
+          <Action
+            icon={require('../../../assets/icons/cancel.png')}
+            iconSize={12}
+            label={t('cancel_booking')}
+            onPress={onReject}
+          />
+        </View>
       </View>
       <View style={styles.buttonContainer}>
-        <Button style={styles.button} onPress={() => onStatusChange(STATUS.ARRIVED)}>Arrived</Button>
+        <Button style={styles.button} onPress={onArrive}>
+          {t('arrived')}
+        </Button>
       </View>
     </View>
   );
@@ -61,6 +77,9 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     marginHorizontal: 7,
+  },
+  actionContainer: {
+    flex: 1,
   },
   buttonContainer: {
     marginTop: 15,

@@ -1,18 +1,25 @@
 import React from 'react';
-import {View, Image, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import Text from './Text';
+import Image from './Image';
 import theme from '../constants/theme';
+import {ratingFormat} from '../helpers/display';
 
-const UserInfo = () => {
+const UserInfo = ({data}) => {
+  const {name, avatar, rating} = data;
+
   return (
     <View style={theme.block.rowMiddle}>
       <Image
         style={styles.avatar}
-        source={require('../assets/icons/user-avatar.png')}
+        source={
+          avatar ? {uri: avatar} : require('../assets/icons/user-avatar.png')
+        }
       />
       <View style={theme.block.marginLeft(10)}>
         <Text bold size={16}>
-          Poppet Celdran
+          {/* {getFullName(first_name, last_name)} */}
+          {name}
         </Text>
         <View style={[theme.block.rowMiddle, theme.block.marginTop(5)]}>
           <Image
@@ -20,7 +27,7 @@ const UserInfo = () => {
             source={require('../assets/icons/star.png')}
           />
           <Text light style={styles.rating}>
-            4,75
+            {ratingFormat(rating || 0)}
           </Text>
         </View>
       </View>

@@ -5,10 +5,7 @@ import SignUpScreen from '../screens/SignUp';
 import WelcomeScreen from '../screens/Welcome';
 import VerifyOTPScreen from '../screens/VerifyOTP';
 import PhoneLoginScreen from '../screens/PhoneLogin';
-import PersonalScreen from '../screens/Personal';
-import RegisteredScreen from '../screens/Registered';
 import ForgotPasswordScreen from '../screens/ForgotPassword';
-import NewPasswordScreen from '../screens/NewPassword';
 import TermsScreen from '../screens/Terms';
 
 const {Navigator, Screen} = createStackNavigator();
@@ -25,8 +22,5 @@ export default () => (
     <Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     <Screen name="SignUp" component={SignUpScreen} />
     <Screen name="Terms" component={TermsScreen} />
-    <Screen name="Personal" component={PersonalScreen} />
-    <Screen name="Registered" component={RegisteredScreen} />
-    <Screen name="NewPassword" component={NewPasswordScreen} />
   </Navigator>
 );

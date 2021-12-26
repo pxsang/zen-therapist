@@ -6,6 +6,8 @@ const theme = {
     text: '#505050',
     gray: '#BDBDBD',
     border: '#E3E9F2',
+    error: '#DF2F45',
+    link: '#47D1C3',
   },
   spacing: {
     s: 10,
@@ -35,6 +37,10 @@ const theme = {
       flexDirection: 'row',
       alignItems: 'flex-start',
     },
+    rowCenter: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+    },
     blockMiddleBetween: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -55,6 +61,12 @@ const theme = {
     }),
     marginRight: num => ({
       marginRight: num,
+    }),
+    paddingHorizontal: num => ({
+      paddingHorizontal: num,
+    }),
+    paddingVertical: num => ({
+      paddingVertical: num,
     }),
   },
 };

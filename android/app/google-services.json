@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "714647490769",
+    "project_id": "utopian-planet-316207",
+    "storage_bucket": "utopian-planet-316207.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714647490769:android:fbe1b4b8442ff5c9d535f0",
+        "android_client_info": {
+          "package_name": "com.zenapppro.client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "714647490769-3oh035tqau0did4um6h6gn6bf79r3a1m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zenapppro.client",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "714647490769-sg016leur7khppf9n8ctteg16u4kiti5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJNcjOwEJUqPiyuZtqYOcYAy7JbgLbsf8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "714647490769-sg016leur7khppf9n8ctteg16u4kiti5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "714647490769-d82ish6rpm7ht0ivie925inao47oq685.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.zenapppro.therapist"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714647490769:android:cadca8b57af60823d535f0",
+        "android_client_info": {
+          "package_name": "com.zenapppro.therapist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "714647490769-i03srh28g29p4bb95uk50d7ov49o3oav.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zenapppro.therapist",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "714647490769-sg016leur7khppf9n8ctteg16u4kiti5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJNcjOwEJUqPiyuZtqYOcYAy7JbgLbsf8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "714647490769-sg016leur7khppf9n8ctteg16u4kiti5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "714647490769-d82ish6rpm7ht0ivie925inao47oq685.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.zenapppro.therapist"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

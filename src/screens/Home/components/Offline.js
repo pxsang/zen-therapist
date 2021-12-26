@@ -1,19 +1,22 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '@ui-kitten/components';
 import Text from '../../../components/Text';
+import UserStatistics from '../../../components/UserStatistics';
 import UserInfo from '../../../components/UserInfo';
-import VerticalInfo from '../../../components/VerticalInfo';
 import theme from '../../../constants/theme';
+import {AppContext} from '../../../providers/AppProvider';
 
-const Offline = ({onStatusChange}) => {
+const Offline = ({userInfo, onOnline}) => {
+  const {t} = useContext(AppContext);
+
   return (
     <View>
       <Text center bold style={styles.statusTitle}>
-        You’re Offline
+        {t('you_are_offline')}
       </Text>
       <View style={theme.block.blockMiddleBetween}>
-        <UserInfo />
+        <UserInfo data={userInfo} />
         <Button
           accessoryLeft={() => (
             <View style={theme.block.blockMiddleBetween}>
@@ -23,26 +26,11 @@ const Offline = ({onStatusChange}) => {
             </View>
           )}
           style={styles.goButton}
-          onPress={onStatusChange}
+          onPress={onOnline}
         />
       </View>
-      <View style={styles.informationContainer}>
-        <VerticalInfo
-          label="Acceptance"
-          value="95.0%"
-          icon={require('../../../assets/icons/acceptance.png')}
-        />
-        <VerticalInfo
-          label="Rating"
-          value="4.75"
-          icon={require('../../../assets/icons/rating.png')}
-        />
-        <VerticalInfo
-          label="Cancellation"
-          value="2.0%"
-          icon={require('../../../assets/icons/cancellation.png')}
-        />
-      </View>
+      <View height={20} />
+      <UserStatistics />
     </View>
   );
 };

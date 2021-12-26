@@ -1,85 +1,38 @@
-import React, {useState, useRef} from 'react';
-import {
-  KeyboardAvoidingView,
-  Linking,
-  StyleSheet,
-  View,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
-import {Layout, Button as UIButton, Icon} from '@ui-kitten/components';
-import Button from '../components/Button';
+import React from 'react';
+import {Linking, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {Layout, Icon} from '@ui-kitten/components';
 import Text from '../components/Text';
 import Header from '../components/Header';
 import theme from '../constants/theme';
+import t from '../i18n';
 
 const Support = props => {
   return (
     <>
-      <Header {...props} title="Support" />
+      <Header {...props} title={t('support')} />
       <Layout style={[styles.container]}>
-        <TouchableOpacity>
-          <View style={{
-            padding: 25,
-            borderRadius: 12,
-            backgroundColor: 'white',
-            shadowColor: '#303030',
-            shadowOffset: {
-              width: 0,
-              height: 0,
-            },
-            shadowOpacity: 0.1,
-            shadowRadius: 10,
-            elevation: 10,
-            marginBottom: 40,
-          }}>
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
+        {/* <TouchableOpacity>
+          <View style={styles.itemContainer}>
+            <View style={theme.block.rowMiddle}>
               <Icon
-                style={{
-                  width: 24,
-                  height: 24,
-                  marginRight: 15,
-                }}
-                fill='#47D1C3'
-                name='message-square-outline'
+                style={styles.icon}
+                fill={theme.color.primary}
+                name="message-square-outline"
               />
-              <Text semiBold size={16}>Chat with Therapist Services HQ</Text>
+              <Text color={theme.color.primary}>{t('chat_with_hq')}</Text>
             </View>
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => Linking.openURL(`tel:${'0981346304'}`)}>
-          <View style={{
-            padding: 25,
-            borderRadius: 12,
-            backgroundColor: 'white',
-            shadowColor: '#303030',
-            shadowOffset: {
-              width: 0,
-              height: 0,
-            },
-            shadowOpacity: 0.1,
-            shadowRadius: 10,
-            elevation: 10,
-          }}>
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          onPress={() => Linking.openURL(`tel:${'0707269001'}`)}>
+          <View style={styles.itemContainer}>
+            <View style={theme.block.rowMiddle}>
               <Icon
-                style={{
-                  width: 24,
-                  height: 24,
-                  marginRight: 15,
-                }}
-                fill='#47D1C3'
-                name='phone-outline'
+                style={styles.icon}
+                fill={theme.color.primary}
+                name="phone-outline"
               />
-              <Text semiBold size={16}>Call us (8 AM - 5 PM)</Text>
+              <Text color={theme.color.primary}>{t('call_us')}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -95,5 +48,25 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 40,
+  },
+  itemContainer: {
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    borderRadius: 12,
+    backgroundColor: 'white',
+    shadowColor: '#303030',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
+    marginBottom: 40,
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
   },
 });

@@ -6,3 +6,12 @@ export const setFirstTime = isFirstTime => {
     });
   };
 };
+
+export const switchLanguage = language => {
+  return dispatch => {
+    return dispatch({
+      type: 'APP/SWITCH_LANGUAGE',
+      data: language,
+    });
+  };
+};
