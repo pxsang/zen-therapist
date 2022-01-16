@@ -1,10 +1,7 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {
-  KeyboardAvoidingView,
-  Keyboard,
   StyleSheet,
   View,
-  ScrollView,
   TouchableWithoutFeedback,
   Platform,
 } from 'react-native';
@@ -14,14 +11,15 @@ import {Layout, Button as UIButton, Icon} from '@ui-kitten/components';
 import ImagePicker from 'react-native-image-crop-picker';
 import Button from '../components/Button';
 import Image from '../components/Image';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import BottomActions from '../components/BottomActions';
 import Input from '../components/Input';
 import theme from '../constants/theme';
-import {AppContext} from '../providers/AppProvider';
-import {LANGUAGE_TITLE, LANGUAGE_LIST, GENDER} from '../constants/Constants';
+import Text from '../components/Text';
+import {GENDER} from '../constants/Constants';
 import {updateProfile} from '../redux/actions/user';
 import t from '../i18n';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const UpdateProfile = props => {
   const dispatch = useDispatch();
@@ -52,7 +50,6 @@ const UpdateProfile = props => {
       cropperCircleOverlay: true,
     }).then(image => {
       if (image) {
-        console.log('image', image);
         handlePickPhoto(image);
       }
     });
@@ -67,7 +64,6 @@ const UpdateProfile = props => {
       cropperCircleOverlay: true,
     }).then(image => {
       if (image) {
-        console.log('image', image);
         handlePickPhoto(image);
       }
     });
@@ -121,15 +117,9 @@ const UpdateProfile = props => {
     <>
       <Header {...props} title={t('edit_profile')} />
       <Layout style={styles.container(safeArea)}>
-        <KeyboardAvoidingView
-          style={{flex: 1}}
-          behavior={Platform.OS === 'ios' ? 'height' : 'height'}>
-          {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+        <KeyboardAwareScrollView>
           <View style={styles.content}>
-            <View
-              style={
-                Platform.OS === 'ios' ? styles.header : styles.headerAndroid
-              }>
+            <View style={styles.header}>
               <TouchableWithoutFeedback onPress={() => onOpen()}>
                 <View style={styles.avatarContainer}>
                   <Image
@@ -180,64 +170,58 @@ const UpdateProfile = props => {
                 </UIButton>
               </View>
             </View>
-            <ScrollView
-              style={styles.form(safeArea)}
-              contentContainerStyle={{paddingBottom: 80}}
-              showsVerticalScrollIndicator={false}>
-              <View style={styles.inputContainer}>
-                <Input
-                  value={formData.name}
-                  label={t('full_name')}
-                  placeholder={t('enter_your_full_name')}
-                  status={!formData.name ? 'danger' : 'basic'}
-                  caption={renderNameError()}
-                  onChangeText={nextValue =>
-                    setFormData({
-                      ...formData,
-                      name: nextValue,
-                    })
-                  }
-                />
-              </View>
-              <View style={styles.inputContainer}>
-                <Input
-                  value={formData.email}
-                  label={t('email')}
-                  placeholder={t('enter_your_email')}
-                  onChangeText={nextValue =>
-                    setFormData({
-                      ...formData,
-                      email: nextValue,
-                    })
-                  }
-                />
-              </View>
-              <View style={styles.inputContainer}>
-                <Input
-                  value={formData.permanent_address}
-                  label={t('address')}
-                  placeholder={t('enter_your_address')}
-                  onChangeText={nextValue =>
-                    setFormData({
-                      ...formData,
-                      permanent_address: nextValue,
-                    })
-                  }
-                />
-              </View>
-              <View style={styles.footer}>
-                <Button
-                  icon="arrow-forward-outline"
-                  disabled={!formData.name}
-                  isLoading={isLoading}
-                  onPress={handleUpdateProfile}>
-                  {t('update_profile')}
-                </Button>
-              </View>
-            </ScrollView>
+            <View style={styles.inputContainer}>
+              <Input
+                value={formData.name}
+                label={t('full_name')}
+                placeholder={t('enter_your_full_name')}
+                status={!formData.name ? 'danger' : 'basic'}
+                caption={renderNameError()}
+                onChangeText={nextValue =>
+                  setFormData({
+                    ...formData,
+                    name: nextValue,
+                  })
+                }
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Input
+                value={formData.email}
+                label={t('email')}
+                placeholder={t('enter_your_email')}
+                onChangeText={nextValue =>
+                  setFormData({
+                    ...formData,
+                    email: nextValue,
+                  })
+                }
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Input
+                value={formData.permanent_address}
+                label={t('address')}
+                placeholder={t('enter_your_address')}
+                onChangeText={nextValue =>
+                  setFormData({
+                    ...formData,
+                    permanent_address: nextValue,
+                  })
+                }
+              />
+            </View>
+            <View style={styles.footer}>
+              <Button
+                icon="arrow-forward-outline"
+                disabled={!formData.name}
+                isLoading={isLoading}
+                onPress={handleUpdateProfile}>
+                {t('update_profile')}
+              </Button>
+            </View>
           </View>
-          {/* </TouchableWithoutFeedback> */}
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
       </Layout>
       <BottomActions
         isVisible={isOpenBottomAction}
@@ -262,7 +246,6 @@ export default UpdateProfile;
 const styles = StyleSheet.create({
   container: safeArea => ({
     flex: 1,
-    // paddingBottom: safeArea.bottom,
   }),
   content: {
     flex: 1,
@@ -281,14 +264,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   header: {
-    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
-    top: -71,
-    height: 142,
-    zIndex: 99,
-  },
-  headerAndroid: {
-    alignItems: 'center',
+    paddingVertical: 20,
   },
   avatarContainer: {
     width: 142,
@@ -312,7 +289,7 @@ const styles = StyleSheet.create({
   },
   form: safeArea => ({
     // height: '100%',
-    marginTop: Platform.OS === 'ios' ? 150 : 20,
+    marginTop: 20,
     paddingVertical: 20,
     paddingBottom: safeArea.bottom || 20,
   }),

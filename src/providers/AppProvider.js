@@ -1,7 +1,6 @@
 import React, {createContext} from 'react';
-import {View, Alert, StyleSheet} from 'react-native';
+import {Alert} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import Text from '../components/Text';
 import {switchLanguage} from '../redux/actions/app';
 import {logout} from '../redux/actions/user';
 import t, {setLocale} from '../i18n';

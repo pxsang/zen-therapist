@@ -1,27 +1,20 @@
 import React, {useState} from 'react';
-import {
-  KeyboardAvoidingView,
-  Keyboard,
-  StyleSheet,
-  View,
-  ScrollView,
-  TouchableWithoutFeedback,
-  Platform,
-} from 'react-native';
+import {StyleSheet, View, TouchableWithoutFeedback} from 'react-native';
 import {Layout, Button as UIButton, Icon} from '@ui-kitten/components';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
 import Text from '../components/Text';
 import Image from '../components/Image';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import BottomActions from '../components/BottomActions';
 import theme from '../constants/theme';
 import {updateProfile} from '../redux/actions/user';
 import {GENDER} from '../constants/Constants';
 import t from '../i18n';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const Personal = props => {
   const dispatch = useDispatch();
@@ -142,142 +135,129 @@ const Personal = props => {
     <>
       <Header {...props} />
       <Layout style={styles.container(safeArea)}>
-        <KeyboardAvoidingView
-          style={{flex: 1}}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 200 : 0}
-          behavior={Platform.OS === 'ios' ? 'height' : 'height'}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.content}>
-              <View
-                style={
-                  Platform.OS === 'ios' ? styles.header : styles.headerAndroid
-                }>
-                <TouchableWithoutFeedback onPress={() => onOpen()}>
-                  <View style={styles.avatarContainer}>
-                    <Image
-                      style={styles.avatarImage}
-                      source={
-                        formData.avatar
-                          ? {
-                              uri: formData.avatar,
-                            }
-                          : require('../assets/icons/avatar.png')
-                      }
+        <KeyboardAwareScrollView>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <TouchableWithoutFeedback onPress={() => onOpen()}>
+                <View style={styles.avatarContainer}>
+                  <Image
+                    style={styles.avatarImage}
+                    source={
+                      formData.avatar
+                        ? {
+                            uri: formData.avatar,
+                          }
+                        : require('../assets/icons/avatar.png')
+                    }
+                  />
+                  <View style={styles.cameraIconContainer}>
+                    <Icon
+                      name="camera-outline"
+                      fill={theme.color.gray}
+                      style={styles.cameraIcon}
                     />
-                    <View style={styles.cameraIconContainer}>
-                      <Icon
-                        name="camera-outline"
-                        fill={theme.color.gray}
-                        style={styles.cameraIcon}
-                      />
-                    </View>
                   </View>
-                </TouchableWithoutFeedback>
-                <View style={styles.genderContainer}>
-                  <UIButton
-                    appearance={
-                      formData.gender === GENDER.MALE ? 'filled' : 'outline'
-                    }
-                    style={[styles.genderButton, styles.genderButtonLeft]}
-                    onPress={() =>
-                      setFormData({
-                        ...formData,
-                        gender: GENDER.MALE,
-                      })
-                    }>
-                    {t('male')}
-                  </UIButton>
-                  <UIButton
-                    appearance={
-                      formData.gender === GENDER.FEMALE ? 'filled' : 'outline'
-                    }
-                    style={[styles.genderButton, styles.genderButtonRight]}
-                    onPress={() =>
-                      setFormData({
-                        ...formData,
-                        gender: GENDER.FEMALE,
-                      })
-                    }>
-                    {t('female')}
-                  </UIButton>
                 </View>
+              </TouchableWithoutFeedback>
+              <View style={styles.genderContainer}>
+                <UIButton
+                  appearance={
+                    formData.gender === GENDER.MALE ? 'filled' : 'outline'
+                  }
+                  style={[styles.genderButton, styles.genderButtonLeft]}
+                  onPress={() =>
+                    setFormData({
+                      ...formData,
+                      gender: GENDER.MALE,
+                    })
+                  }>
+                  {t('male')}
+                </UIButton>
+                <UIButton
+                  appearance={
+                    formData.gender === GENDER.FEMALE ? 'filled' : 'outline'
+                  }
+                  style={[styles.genderButton, styles.genderButtonRight]}
+                  onPress={() =>
+                    setFormData({
+                      ...formData,
+                      gender: GENDER.FEMALE,
+                    })
+                  }>
+                  {t('female')}
+                </UIButton>
               </View>
-              <ScrollView
-                style={styles.form(safeArea)}
-                contentContainerStyle={{paddingBottom: 80}}
-                showsVerticalScrollIndicator={false}>
-                <View style={styles.inputContainer}>
-                  <Input
-                    value={formData.name}
-                    label={t('full_name')}
-                    placeholder={t('enter_your_full_name')}
-                    onChangeText={nextValue =>
-                      setFormData({
-                        ...formData,
-                        name: nextValue,
-                      })
-                    }
-                  />
-                </View>
-                <View style={styles.inputContainer}>
-                  <Input
-                    autoCompleteType="email"
-                    keyboardType="email-address"
-                    value={formData.email}
-                    label={t('email')}
-                    placeholder={t('enter_your_email')}
-                    onChangeText={nextValue =>
-                      setFormData({
-                        ...formData,
-                        email: nextValue,
-                      })
-                    }
-                  />
-                </View>
-                <View style={styles.inputContainer}>
-                  <Input
-                    value={formData.permanent_address}
-                    label={t('address')}
-                    placeholder={t('enter_your_address')}
-                    onChangeText={nextValue =>
-                      setFormData({
-                        ...formData,
-                        permanent_address: nextValue,
-                      })
-                    }
-                  />
-                </View>
-                <View style={styles.inputContainer}>
-                  <Input
-                    value={formData.new_password}
-                    label={t('password')}
-                    placeholder={t('enter_your_password')}
-                    accessoryRight={renderEyeIcon}
-                    onChangeText={nextValue =>
-                      setFormData({
-                        ...formData,
-                        new_password: nextValue,
-                        confirm_password: nextValue,
-                      })
-                    }
-                    caption={t('password_caption')}
-                    secureTextEntry={!shownPassword}
-                  />
-                </View>
-                <View style={styles.footer}>
-                  {renderError()}
-                  <Button
-                    icon="arrow-forward-outline"
-                    isLoading={isLoading}
-                    disabled={!formValidation()}
-                    onPress={handleCompleteProfile}>
-                    {t('create_account')}
-                  </Button>
-                </View>
-              </ScrollView>
             </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+            <View style={styles.inputContainer}>
+              <Input
+                value={formData.name}
+                label={t('full_name')}
+                placeholder={t('enter_your_full_name')}
+                onChangeText={nextValue =>
+                  setFormData({
+                    ...formData,
+                    name: nextValue,
+                  })
+                }
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Input
+                autoCompleteType="email"
+                keyboardType="email-address"
+                value={formData.email}
+                label={t('email')}
+                placeholder={t('enter_your_email')}
+                onChangeText={nextValue =>
+                  setFormData({
+                    ...formData,
+                    email: nextValue,
+                  })
+                }
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Input
+                value={formData.permanent_address}
+                label={t('address')}
+                placeholder={t('enter_your_address')}
+                onChangeText={nextValue =>
+                  setFormData({
+                    ...formData,
+                    permanent_address: nextValue,
+                  })
+                }
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Input
+                value={formData.new_password}
+                label={t('password')}
+                placeholder={t('enter_your_password')}
+                accessoryRight={renderEyeIcon}
+                onChangeText={nextValue =>
+                  setFormData({
+                    ...formData,
+                    new_password: nextValue,
+                    confirm_password: nextValue,
+                  })
+                }
+                caption={t('password_caption')}
+                secureTextEntry={!shownPassword}
+              />
+            </View>
+            <View style={styles.footer}>
+              {renderError()}
+              <Button
+                icon="arrow-forward-outline"
+                isLoading={isLoading}
+                disabled={!formValidation()}
+                onPress={handleCompleteProfile}>
+                {t('create_account')}
+              </Button>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
       </Layout>
       <BottomActions
         isVisible={isOpenBottomAction}
@@ -307,7 +287,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: theme.spacing.m,
-    paddingVertical: Platform.OS === 'ios' ? 0 : 20,
+    paddingBottom: 80,
   },
   genderButton: {
     height: 42,
@@ -321,19 +301,11 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   header: {
-    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
-    top: -71,
-    height: 142,
-    zIndex: 99,
-  },
-  headerAndroid: {
-    alignItems: 'center',
+    paddingVertical: 20,
   },
   form: safeArea => ({
     flex: 1,
-    marginTop: Platform.OS === 'ios' ? 150 : 20,
-    paddingVertical: 20,
     paddingBottom: safeArea.bottom || 20,
   }),
   footer: {

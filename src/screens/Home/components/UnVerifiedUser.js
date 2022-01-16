@@ -1,18 +1,16 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Button} from '@ui-kitten/components';
 import Text from '../../../components/Text';
 import Image from '../../../components/Image';
-import t from '../../../i18n';
 import {USER_STATUS} from '../../../constants/Constants';
 
 const UnVerifiedUser = ({userStatus}) => {
   return (
     <View style={styles.container}>
-      <Text bold size={24}>
+      <Text center bold size={24}>
         {userStatus === USER_STATUS.REJECTED
           ? 'Tài khoản chưa kích hoạt'
-          : 'Tài khoản đang tạm khoá'}
+          : 'Tài khoản đang được chờ được xác thực'}
       </Text>
       <Image
         source={require('../../../assets/images/enable-location.png')}

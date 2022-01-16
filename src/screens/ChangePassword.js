@@ -1,22 +1,15 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {
-  KeyboardAvoidingView,
-  Keyboard,
-  Platform,
-  ScrollView,
-  TouchableWithoutFeedback,
-  StyleSheet,
-  View,
-} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {TouchableWithoutFeedback, StyleSheet, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Layout, Icon} from '@ui-kitten/components';
 import Button from '../components/Button';
 import Text from '../components/Text';
 import Input from '../components/Input';
 import theme from '../constants/theme';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import {updatePassword} from '../redux/actions/user';
 import t from '../i18n';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const ChangePassword = props => {
   const dispatch = useDispatch();
@@ -108,65 +101,59 @@ const ChangePassword = props => {
     <>
       <Header title={t('change_password')} {...props} />
       <Layout style={[styles.container]}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'height' : 'height'}
-          style={[styles.container]}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView style={styles.content}>
-              <View>
-                <View style={styles.formContainer}>
-                  <View style={styles.inputContainer}>
-                    <Input
-                      value={formData.old_password}
-                      label={t('current_password')}
-                      placeholder={t('enter_current_password')}
-                      accessoryRight={renderCurrentPasswordEyeIcon}
-                      onChangeText={nextValue =>
-                        setFormData({...formData, old_password: nextValue})
-                      }
-                      secureTextEntry={!shownCurrentPassword}
-                    />
-                  </View>
-                  <View style={styles.inputContainer}>
-                    <Input
-                      value={formData.new_password}
-                      label={t('new_password')}
-                      placeholder={t('enter_new_password')}
-                      caption={t('password_caption')}
-                      accessoryRight={renderNewPasswordEyeIcon}
-                      onChangeText={nextValue =>
-                        setFormData({...formData, new_password: nextValue})
-                      }
-                      secureTextEntry={!shownNewPassword}
-                    />
-                  </View>
-                  <View style={styles.inputContainer}>
-                    <Input
-                      value={formData.confirm_password}
-                      label={t('confirm_password')}
-                      placeholder={t('enter_confirm_password')}
-                      accessoryRight={renderCheckMarkIcon}
-                      onChangeText={nextValue =>
-                        setFormData({...formData, confirm_password: nextValue})
-                      }
-                      secureTextEntry
-                    />
-                  </View>
-                </View>
+        <KeyboardAwareScrollView>
+          <View style={styles.content}>
+            <View style={styles.formContainer}>
+              <View style={styles.inputContainer}>
+                <Input
+                  value={formData.old_password}
+                  label={t('current_password')}
+                  placeholder={t('enter_current_password')}
+                  accessoryRight={renderCurrentPasswordEyeIcon}
+                  onChangeText={nextValue =>
+                    setFormData({...formData, old_password: nextValue})
+                  }
+                  secureTextEntry={!shownCurrentPassword}
+                />
               </View>
-              <View style={styles.footer}>
-                {renderError()}
-                <Button
-                  isLoading={isLoading}
-                  disabled={!canSubmit()}
-                  onPress={handleUpdatePassword}
-                  icon="arrow-forward-outline">
-                  {t('complete')}
-                </Button>
+              <View style={styles.inputContainer}>
+                <Input
+                  value={formData.new_password}
+                  label={t('new_password')}
+                  placeholder={t('enter_new_password')}
+                  caption={t('password_caption')}
+                  accessoryRight={renderNewPasswordEyeIcon}
+                  onChangeText={nextValue =>
+                    setFormData({...formData, new_password: nextValue})
+                  }
+                  secureTextEntry={!shownNewPassword}
+                />
               </View>
-            </ScrollView>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+              <View style={styles.inputContainer}>
+                <Input
+                  value={formData.confirm_password}
+                  label={t('confirm_password')}
+                  placeholder={t('enter_confirm_password')}
+                  accessoryRight={renderCheckMarkIcon}
+                  onChangeText={nextValue =>
+                    setFormData({...formData, confirm_password: nextValue})
+                  }
+                  secureTextEntry
+                />
+              </View>
+            </View>
+            <View style={styles.footer}>
+              {renderError()}
+              <Button
+                isLoading={isLoading}
+                disabled={!canSubmit()}
+                onPress={handleUpdatePassword}
+                icon="arrow-forward-outline">
+                {t('complete')}
+              </Button>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
       </Layout>
     </>
   );
@@ -189,9 +176,7 @@ const styles = StyleSheet.create({
   footer: {
     justifyContent: 'flex-end',
   },
-  formContainer: {
-    paddingVertical: 20,
-  },
+  formContainer: {},
   inputContainer: {
     marginBottom: 20,
   },

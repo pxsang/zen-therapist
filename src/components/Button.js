@@ -19,8 +19,7 @@ const Button = ({
   );
 
   const LoadingIndicator = () => (
-    <View style={{ justifyContent: 'center',
-    alignItems: 'center' }}>
+    <View style={{justifyContent: 'center', alignItems: 'center'}}>
       <Spinner size="small" />
     </View>
   );
@@ -44,7 +43,6 @@ const Button = ({
         {
           height,
           borderRadius,
-          // backgroundColor: disabled ? 'white' : styles.button.backgroundColor,
         },
         appearance === 'rounded' && {
           ...{paddingVertical: 0, justifyContent: 'center'},

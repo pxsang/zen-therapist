@@ -3,7 +3,7 @@ import {StyleSheet, View, TouchableWithoutFeedback} from 'react-native';
 import {Layout, Icon} from '@ui-kitten/components';
 import {useNavigation} from '@react-navigation/native';
 import Text from '../components/Text';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import BottomActions from '../components/BottomActions';
 import theme from '../constants/theme';
 import {AppContext} from '../providers/AppProvider';

@@ -1,31 +1,22 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {
-  KeyboardAvoidingView,
-  Keyboard,
-  StyleSheet,
-  View,
-  ScrollView,
-  TouchableWithoutFeedback,
-  Platform,
-} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {Layout} from '@ui-kitten/components';
 import Button from '../components/Button';
 import Text from '../components/Text';
 import GhostButton from '../components/GhostButton';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import OTP from '../components/OTP';
 import theme from '../constants/theme';
 import t from '../i18n';
 import {verifyOTP} from '../redux/actions/user';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const VerifyOTP = props => {
   const dispatch = useDispatch();
   const {route} = props;
   const {phoneNumber, type} = route.params || {};
 
-  // const UserState = useSelector(state => state.User);
-  // const {isLoading, isFailed, errorMessage} = UserState.login;
   let [otp, setOTP] = useState('1111');
   let [isLoading, setLoading] = useState(false);
   let [isFailed, setFailed] = useState(false);
@@ -38,7 +29,6 @@ const VerifyOTP = props => {
       setErrorMessage('');
       await dispatch(verifyOTP(phoneNumber, otp, type));
     } catch (error) {
-      console.log('error', error);
       setFailed(true);
       setErrorMessage(error.message);
     } finally {
@@ -56,57 +46,49 @@ const VerifyOTP = props => {
     <>
       <Header {...props} />
       <Layout style={[styles.container]}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.container}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView style={styles.content}>
-              <View>
-                <Text style={styles.greeting}>{t('phone_verification')}</Text>
-                <Text style={styles.title}>{t('enter_your_otp_code')}</Text>
-                <Text>
-                  {t('phone_verification_description', {phoneNumber})}
-                </Text>
-                <View style={styles.formContainer}>
-                  <View style={styles.otpContainer}>
-                    <OTP
-                      value={otp}
-                      autoFocus
-                      isNumberInput
-                      length={4}
-                      onChangeOTP={setOTP}
-                    />
-                    {isFailed && (
-                      <View>
-                        <View height={10} />
-                        <Text color={theme.color.error}>{errorMessage}</Text>
-                      </View>
-                    )}
-                  </View>
+        <KeyboardAwareScrollView>
+          <View style={styles.content}>
+            <Text style={styles.greeting}>{t('phone_verification')}</Text>
+            <Text style={styles.title}>{t('enter_your_otp_code')}</Text>
+            <Text>{t('phone_verification_description', {phoneNumber})}</Text>
+            <View style={styles.formContainer}>
+              <View style={styles.otpContainer}>
+                <OTP
+                  value={otp}
+                  autoFocus
+                  isNumberInput
+                  length={4}
+                  onChangeOTP={setOTP}
+                />
+                {isFailed && (
                   <View>
-                    <GhostButton>
-                      <View>
-                        <View style={styles.resendContainer}>
-                          <Text>{t('resend_code_in')} </Text>
-                          <Text bold>{t('seconds', {seconds: 10})}</Text>
-                        </View>
-                      </View>
-                    </GhostButton>
+                    <View height={10} />
+                    <Text color={theme.color.error}>{errorMessage}</Text>
                   </View>
-                </View>
+                )}
               </View>
-              <View style={styles.footer}>
-                <Button
-                  icon="arrow-forward-outline"
-                  isLoading={isLoading}
-                  disabled={otp?.length < 4}
-                  onPress={handleVerifyOTP}>
-                  {t('continue')}
-                </Button>
+              <View>
+                <GhostButton>
+                  <View>
+                    <View style={styles.resendContainer}>
+                      <Text>{t('resend_code_in')} </Text>
+                      <Text bold>{t('seconds', {seconds: 10})}</Text>
+                    </View>
+                  </View>
+                </GhostButton>
               </View>
-            </ScrollView>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+            </View>
+            <View style={styles.footer}>
+              <Button
+                icon="arrow-forward-outline"
+                isLoading={isLoading}
+                disabled={otp?.length < 4}
+                onPress={handleVerifyOTP}>
+                {t('continue')}
+              </Button>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
       </Layout>
     </>
   );

@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,14 +9,14 @@ import {
 import {Layout} from '@ui-kitten/components';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
 import BottomActions from '../components/BottomActions';
 import GhostButton from '../components/GhostButton';
 import Button from '../components/Button';
 import Image from '../components/Image';
 import Text from '../components/Text';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import theme from '../constants/theme';
 import {updateProfile} from '../redux/actions/user';
 import t from '../i18n';

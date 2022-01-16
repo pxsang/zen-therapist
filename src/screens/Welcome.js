@@ -68,13 +68,7 @@ const styles = StyleSheet.create({
   imageWrapper: {
     paddingVertical: theme.spacing.l,
   },
-  imageContainer: {
-    // width: width * 4,
-    // marginLeft: -width * 1.4,
-    // transform: [{
-    //   translateX:
-    // }]
-  },
+  imageContainer: {},
   image: {
     width: 3 * width,
     position: 'absolute',

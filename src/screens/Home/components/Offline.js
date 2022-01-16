@@ -1,14 +1,14 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '@ui-kitten/components';
 import Text from '../../../components/Text';
 import UserStatistics from '../../../components/UserStatistics';
 import UserInfo from '../../../components/UserInfo';
 import theme from '../../../constants/theme';
-import {AppContext} from '../../../providers/AppProvider';
+import useTranslate from '../../../hooks/useTranslate';
 
 const Offline = ({userInfo, onOnline}) => {
-  const {t} = useContext(AppContext);
+  const t = useTranslate();
 
   return (
     <View>

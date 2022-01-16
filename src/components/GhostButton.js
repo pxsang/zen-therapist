@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, TouchableWithoutFeedback, StyleSheet} from 'react-native';
-import {Text} from '@ui-kitten/components';
+import Text from './Text';
 
 const GhostButton = ({children, onPress}) => {
   let content;

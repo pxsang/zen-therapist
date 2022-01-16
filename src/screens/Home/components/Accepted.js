@@ -31,18 +31,6 @@ const Accepted = ({sessionDetail, onArrive, onReject}) => {
         {t('on_the_way_to')}
       </Text>
       <View style={[theme.block.rowLeft, theme.block.marginTop(20)]}>
-        {/* <View style={styles.actionContainer}>
-          <Action
-            icon={require('../../../assets/icons/chat.png')}
-            label={t('chat')}
-          />
-        </View>
-        <View style={styles.actionContainer}>
-          <Action
-            icon={require('../../../assets/icons/message.png')}
-            label={t('message')}
-          />
-        </View> */}
         <View style={styles.actionContainer}>
           <Action
             icon={require('../../../assets/icons/cancel.png')}

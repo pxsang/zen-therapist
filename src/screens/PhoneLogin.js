@@ -1,34 +1,22 @@
 import React, {useState, useRef} from 'react';
-import {
-  StyleSheet,
-  View,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ScrollView,
-  Platform,
-} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Layout, Icon} from '@ui-kitten/components';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import Text from '../components/Text';
 import Button from '../components/Button';
 import GhostButton from '../components/GhostButton';
 import Input from '../components/Input';
 import Image from '../components/Image';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import theme from '../constants/theme';
 import {loginWithPassword} from '../redux/actions/user';
 import t from '../i18n';
 import {phoneValidator, convertTo0PhoneNumber} from '../helpers/display';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const PhoneLogin = props => {
   const dispatch = useDispatch();
-  const UserState = useSelector(state => state.User);
-  // const {
-  //   login: {isLoading, isFailed, errorMessage},
-  // } = UserState;
   const {navigation} = props;
   let [phoneNumber, setPhoneNumber] = useState('');
   let [password, setPassword] = useState('');
@@ -102,59 +90,53 @@ const PhoneLogin = props => {
     <>
       <Header {...props} />
       <Layout style={[styles.container]}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'height' : 'height'}
-          style={{flex: 1}}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView style={styles.content}>
-              <View>
-                <Text style={styles.title}>{t('login__greeting')}</Text>
-                <View style={styles.formContainer}>
-                  <Input
-                    keyboardType="phone-pad"
-                    value={phoneNumber}
-                    label={t('phone_number')}
-                    placeholder={t('enter_your_phone_number')}
-                    accessoryLeft={renderCountryCode}
-                    accessoryRight={renderCheckMarkIcon}
-                    onChangeText={nextValue => setPhoneNumber(nextValue)}
-                  />
-                  <View style={theme.block.marginTop(20)}>
-                    <Input
-                      value={password}
-                      label={t('password')}
-                      status={isFailed ? 'danger' : 'basic'}
-                      caption={renderError()}
-                      placeholder={t('enter_your_password')}
-                      onChangeText={nextValue => setPassword(nextValue)}
-                      secureTextEntry
-                    />
-                  </View>
-                  <View style={theme.block.marginTop(20)}>
-                    <GhostButton
-                      onPress={() => navigation.navigate('ForgotPassword')}>
-                      {t('forgot_password')}
-                    </GhostButton>
-                  </View>
-                </View>
+        <KeyboardAwareScrollView>
+          <View style={styles.content}>
+            <Text style={styles.title}>{t('login__greeting')}</Text>
+            <View style={styles.formContainer}>
+              <Input
+                keyboardType="phone-pad"
+                value={phoneNumber}
+                label={t('phone_number')}
+                placeholder={t('enter_your_phone_number')}
+                accessoryLeft={renderCountryCode}
+                accessoryRight={renderCheckMarkIcon}
+                onChangeText={nextValue => setPhoneNumber(nextValue)}
+              />
+              <View style={theme.block.marginTop(20)}>
+                <Input
+                  value={password}
+                  label={t('password')}
+                  status={isFailed ? 'danger' : 'basic'}
+                  caption={renderError()}
+                  placeholder={t('enter_your_password')}
+                  onChangeText={nextValue => setPassword(nextValue)}
+                  secureTextEntry
+                />
               </View>
-              <View style={styles.footer}>
-                <Button
-                  isLoading={isLoading}
-                  disabled={!phoneValidator(phoneNumber)}
-                  icon="arrow-forward-outline"
-                  onPress={handlePhoneLogin}>
-                  {t('login')}
-                </Button>
-                <View style={theme.block.marginTop(20)}>
-                  <GhostButton onPress={() => navigation.navigate('SignUp')}>
-                    {t('or_create_my_account')}
-                  </GhostButton>
-                </View>
+              <View style={theme.block.marginTop(20)}>
+                <GhostButton
+                  onPress={() => navigation.navigate('ForgotPassword')}>
+                  {t('forgot_password')}
+                </GhostButton>
               </View>
-            </ScrollView>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+            </View>
+            <View style={styles.footer}>
+              <Button
+                isLoading={isLoading}
+                disabled={!phoneValidator(phoneNumber)}
+                icon="arrow-forward-outline"
+                onPress={handlePhoneLogin}>
+                {t('login')}
+              </Button>
+              <View style={theme.block.marginTop(20)}>
+                <GhostButton onPress={() => navigation.navigate('SignUp')}>
+                  {t('or_create_my_account')}
+                </GhostButton>
+              </View>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
       </Layout>
     </>
   );

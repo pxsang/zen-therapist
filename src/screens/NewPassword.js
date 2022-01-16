@@ -1,27 +1,18 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {
-  KeyboardAvoidingView,
-  Keyboard,
-  Platform,
-  ScrollView,
-  TouchableWithoutFeedback,
-  StyleSheet,
-  View,
-} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import React, {useState, useRef} from 'react';
+import {TouchableWithoutFeedback, StyleSheet, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {Layout, Icon} from '@ui-kitten/components';
 import Button from '../components/Button';
 import Text from '../components/Text';
 import Input from '../components/Input';
 import theme from '../constants/theme';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import {setPassword} from '../redux/actions/user';
 import t from '../i18n';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const NewPassword = props => {
   const dispatch = useDispatch();
-  // const UserState = useSelector(state => state.User);
-  // const {isLoading, isSuccessful, isFailed, errorMessage} = UserState.updatePassword;
 
   const {navigation} = props;
   let [formData, setFormData] = useState({
@@ -34,12 +25,6 @@ const NewPassword = props => {
   let [isLoading, setLoading] = useState(false);
   let [isFailed, setFailed] = useState(false);
   let [errorMessage, setErrorMessage] = useState('');
-
-  // useEffect(() => {
-  //   if (isSuccessful) {
-  //     navigation.goBack();
-  //   }
-  // }, [isSuccessful, navigation]);
 
   const renderCurrentPasswordEyeIcon = iconProps => (
     <TouchableWithoutFeedback
@@ -124,54 +109,48 @@ const NewPassword = props => {
     <>
       <Header {...props} />
       <Layout style={[styles.container]}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'height' : 'height'}
-          style={[styles.container]}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView style={styles.content}>
-              <View>
-                <Text style={styles.title}>{t('very_easy')}</Text>
-                <View style={styles.formContainer}>
-                  <View style={styles.inputContainer}>
-                    <Input
-                      value={formData.new_password}
-                      label={t('new_password')}
-                      caption={t('password_caption')}
-                      placeholder={t('enter_new_password')}
-                      accessoryRight={renderNewPasswordEyeIcon}
-                      onChangeText={nextValue =>
-                        setFormData({...formData, new_password: nextValue})
-                      }
-                      secureTextEntry={!shownNewPassword}
-                    />
-                  </View>
-                  <View style={styles.inputContainer}>
-                    <Input
-                      value={formData.confirm_password}
-                      label={t('confirm_password')}
-                      placeholder={t('enter_confirm_password')}
-                      accessoryRight={renderCheckMarkIcon}
-                      onChangeText={nextValue =>
-                        setFormData({...formData, confirm_password: nextValue})
-                      }
-                      secureTextEntry
-                    />
-                  </View>
-                </View>
+        <KeyboardAwareScrollView>
+          <View style={styles.content}>
+            <Text style={styles.title}>{t('very_easy')}</Text>
+            <View style={styles.formContainer}>
+              <View style={styles.inputContainer}>
+                <Input
+                  value={formData.new_password}
+                  label={t('new_password')}
+                  caption={t('password_caption')}
+                  placeholder={t('enter_new_password')}
+                  accessoryRight={renderNewPasswordEyeIcon}
+                  onChangeText={nextValue =>
+                    setFormData({...formData, new_password: nextValue})
+                  }
+                  secureTextEntry={!shownNewPassword}
+                />
               </View>
-              <View style={styles.footer}>
-                {renderError()}
-                <Button
-                  isLoading={isLoading}
-                  disabled={!canSubmit()}
-                  onPress={handleSetPassword}
-                  icon="arrow-forward-outline">
-                  {t('complete')}
-                </Button>
+              <View style={styles.inputContainer}>
+                <Input
+                  value={formData.confirm_password}
+                  label={t('confirm_password')}
+                  placeholder={t('enter_confirm_password')}
+                  accessoryRight={renderCheckMarkIcon}
+                  onChangeText={nextValue =>
+                    setFormData({...formData, confirm_password: nextValue})
+                  }
+                  secureTextEntry
+                />
               </View>
-            </ScrollView>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+            </View>
+            <View style={styles.footer}>
+              {renderError()}
+              <Button
+                isLoading={isLoading}
+                disabled={!canSubmit()}
+                onPress={handleSetPassword}
+                icon="arrow-forward-outline">
+                {t('complete')}
+              </Button>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
       </Layout>
     </>
   );

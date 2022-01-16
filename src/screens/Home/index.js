@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import React, {useState, useMemo, useEffect, useCallback, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -6,7 +6,6 @@ import {
   Platform,
   PermissionsAndroid,
   Linking,
-  Dimensions,
   Alert,
 } from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
@@ -15,9 +14,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import firestore from '@react-native-firebase/firestore';
 import {Layout, Button, Icon} from '@ui-kitten/components';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-// import Geolocation from '@react-native-community/geolocation';
 import Geolocation from 'react-native-geolocation-service';
-import Geocoder from 'react-native-geocoding';
 import Header from '../../components/Header2';
 import Text from '../../components/Text';
 import Image from '../../components/Image';
@@ -29,7 +26,6 @@ import {
   STATUS,
   USER_SESSION_STATUS,
   SESSION_STATUS,
-  SESSION_STATUS_ENUM,
   USER_STATUS,
 } from '../../constants/Constants';
 
@@ -42,13 +38,11 @@ import Accepted from './components/Accepted';
 import Arrived from './components/Arrived';
 import Started from './components/Started';
 
-import {Value, set, useCode} from 'react-native-reanimated';
-import {timing} from 'react-native-redash/lib/module/v1';
+import {Value} from 'react-native-reanimated';
 import theme from '../../constants/theme';
 import MusicPlayer from './components/MusicPlayer';
 import CompletedSession from './components/CompletedSession';
 import {online, offline, startSession} from '../../redux/actions/user';
-import useInterval from '../../helpers/useInterval';
 
 import {
   getSession,
@@ -57,7 +51,6 @@ import {
   arrive,
   start,
   finish,
-  // complete,
   completed,
   completedAndRating,
   cancelled,
@@ -67,10 +60,7 @@ import t from '../../i18n';
 
 // Geocoder.init('AIzaSyAZwqGkoSCTukzpJr5NzBilCrKGajIU92A');
 
-const {width, height} = Dimensions.get('screen');
-
 const Home = () => {
-  // const progress = new Value(0);
   const safeArea = useSafeAreaInsets();
   const dispatch = useDispatch();
   const UserState = useSelector(state => state.User);
@@ -78,24 +68,12 @@ const Home = () => {
   const {userInfo} = UserState;
   const {detail: sessionDetail} = SessionState;
 
-  console.log('session detail', sessionDetail);
   let [status, setStatus] = useState(STATUS.OFFLINE);
 
   const watchId = useRef(null);
 
   let [position, setPosition] = useState();
   let [isLocationError, setLocationError] = useState();
-
-  // useCode(() => {
-  //   if (status === STATUS.STARTED) {
-  //     return set(
-  //       progress,
-  //       timing({
-  //         duration: sessionDetail.request_services[0].duration * 60 * 1000,
-  //       }),
-  //     );
-  //   }
-  // }, [status, progress, sessionDetail]);
 
   const getCurrentProgress = useCallback(() => {
     if (!sessionDetail || sessionDetail.status !== SESSION_STATUS.STARTED) {
@@ -110,7 +88,9 @@ const Home = () => {
     return delta / sessionDuration;
   }, [sessionDetail]);
 
-  let progress = new Value(getCurrentProgress());
+  let progress = useMemo(() => new Value(getCurrentProgress()), [
+    getCurrentProgress,
+  ]);
 
   useEffect(() => {
     progress.setValue(getCurrentProgress());
@@ -166,14 +146,12 @@ const Home = () => {
   }, [status, position, sessionDetail]);
 
   useEffect(() => {
-    console.log('userInfo.code', userInfo.code);
     const subscriber = firestore()
       .collection('therapists')
       .doc(userInfo.code)
       .onSnapshot(snapshot => {
         if (snapshot) {
           const data = snapshot.data();
-          console.log('data', data);
 
           if (_.isEmpty(data) || (!data.assign_session && !data.customer_id)) {
             dispatch(clean());
@@ -181,7 +159,6 @@ const Home = () => {
           }
 
           if (data.assign_session) {
-            console.log('data.assign_session', data.assign_session);
             if (
               !sessionDetail ||
               sessionDetail.id !== data.assign_session ||
@@ -261,32 +238,6 @@ const Home = () => {
     }
   }, [sessionDetail]);
 
-  // useEffect(() => {
-  //   const watchId = Geolocation.watchPosition(
-  //     pos => {
-  //       setError();
-  //       setPosition({
-  //         latitude: pos.coords.latitude,
-  //         longitude: pos.coords.longitude,
-  //       });
-  //     },
-  //     e => {
-  //       setError(e);
-  //     },
-  //     {enableHighAccuracy: true, timeout: 10000, maximumAge: 1000},
-  //   );
-
-  //   return () => Geolocation.clearWatch(watchId);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (!_.isEmpty(position)) {
-  //     // Geocoder.from(position).then(response => {
-  //     //   console.log('Geocoder', response);
-  //     // });
-  //   }
-  // }, [position, dispatch]);
-
   const hasPermissionIOS = async () => {
     const locationServiceStatus = await Geolocation.requestAuthorization(
       'whenInUse',
@@ -356,7 +307,6 @@ const Home = () => {
         dispatch(startSession(pos.coords.latitude, pos.coords.longitude));
       },
       error => {
-        console.log('getOneTimeLocation error', error);
         setLocationError(true);
         // if (error.code === error.PERMISSION_DENIED) {
         //   setRequestLocationButtonType('request');
@@ -375,7 +325,6 @@ const Home = () => {
   const subscribeLocationLocation = () => {
     watchId.current = Geolocation.watchPosition(
       position => {
-        console.log('subscribeLocationLocation', position);
         setPosition({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -686,8 +635,6 @@ const Home = () => {
     );
   };
 
-  console.log('position', position);
-
   return (
     <Layout style={styles.container}>
       <Header />
@@ -730,9 +677,9 @@ const styles = StyleSheet.create({
     height: 28,
   },
   btnStopContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     borderWidth: 0,
     backgroundColor: 'white',
     display: 'flex',
@@ -741,9 +688,9 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   btnStop: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: 'white',
     paddingLeft: 0,
     paddingRight: 0,

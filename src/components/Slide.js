@@ -1,8 +1,9 @@
 import React from 'react';
-import {View, Text, Dimensions, StyleSheet} from 'react-native';
+import {View, Dimensions, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Image from '../components/Image';
 import rewardsTheme from '../constants/theme';
+import Text from './Text';
 
 const {width} = Dimensions.get('screen');
 

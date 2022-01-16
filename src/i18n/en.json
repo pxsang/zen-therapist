@@ -133,5 +133,6 @@
   "password_caption": "Password must be at least 6 characters",
   "choose_from_library": "Choose from library",
   "take_a_photo": "Take a photo",
-  "therapy_will_end_in": "Therapy will end in"
+  "therapy_will_end_in": "Therapy will end in",
+  "tips_description": "Client will tip by cash"
 }

@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
-import { StyleSheet, ScrollView, View, TouchableWithoutFeedback } from 'react-native';
-import { Button, Icon } from '@ui-kitten/components';
+import React, {useState} from 'react';
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import {Button, Icon} from '@ui-kitten/components';
 import Text from '../../../components/Text';
-import Image from '../../../components/Image';
 import ClientInfo from '../../../components/ClientInfo';
 import theme from '../../../constants/theme';
-import t from '../../../i18n';
-import { priceFormat } from '../../../helpers/display';
+import {priceFormat} from '../../../helpers/display';
+import useTranslate from '../../../hooks/useTranslate';
 
-const CompletedSession = ({ sessionDetail, onComplete, onRating }) => {
+const CompletedSession = ({sessionDetail, onComplete, onRating}) => {
   let [rating, setRating] = useState(0);
+  const t = useTranslate();
 
   return (
     <View style={styles.container}>
@@ -50,7 +55,7 @@ const CompletedSession = ({ sessionDetail, onComplete, onRating }) => {
               },
               {
                 label: 'Tip to Therapist',
-                value: '50,000d',
+                value: t('tips_description'),
               },
             ]}
           />
@@ -83,8 +88,7 @@ const CompletedSession = ({ sessionDetail, onComplete, onRating }) => {
         </View>
         <View height={20} />
         <View>
-          <TouchableWithoutFeedback
-            onPress={() => onComplete()}>
+          <TouchableWithoutFeedback onPress={() => onComplete()}>
             <View
               style={[theme.block.rowCenter, theme.block.paddingVertical(10)]}>
               <Text bold size={16} color={theme.color.primary}>

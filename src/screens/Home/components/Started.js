@@ -1,21 +1,16 @@
-import React, {useCallback, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '@ui-kitten/components';
 import Text from '../../../components/Text';
-import Image from '../../../components/Image';
 import theme from '../../../constants/theme';
-import t from '../../../i18n';
+import useCalculateRemainingTime from '../../../hooks/useCalculateRemainingTime';
+import useTranslate from '../../../hooks/useTranslate';
 
 const Started = ({sessionDetail, onFinish}) => {
-  const getMeaningTime = useCallback(() => {
-    const delta = new Date().getTime() - sessionDetail?.started_at;
-    const remaining =
-      sessionDetail?.request_services[0].duration - delta / 60000;
+  const {getMeaningTime} = useCalculateRemainingTime();
+  const t = useTranslate();
 
-    return remaining <= 0 ? 0 : Math.ceil(remaining);
-  }, [sessionDetail]);
-
-  let [meaningTime, setMeaningTime] = useState(getMeaningTime());
+  let [meaningTime, setMeaningTime] = useState(getMeaningTime(sessionDetail));
 
   useEffect(() => {
     let interval = setInterval(() => {
@@ -36,17 +31,6 @@ const Started = ({sessionDetail, onFinish}) => {
         <View style={styles.remainingContainer}>
           <Text bold>{t('min', {min: meaningTime})}</Text>
         </View>
-        {/* <Text bold size={16}>
-          {t('min', {min: sessionDetail.request_services[0].duration})}
-        </Text>
-        <Image
-          style={styles.avatar}
-          source={
-            sessionDetail?.customer?.avatar
-              ? {uri: sessionDetail.customer.avatar}
-              : require('../../../assets/icons/user-avatar.png')
-          }
-        /> */}
       </View>
       <Text center size={12} color={theme.color.gray}>
         {t('massage_in_session_for', {name: sessionDetail.customer.name})}

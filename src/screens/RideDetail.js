@@ -1,29 +1,12 @@
-import React, {useEffect, useRef} from 'react';
-import {
-  KeyboardAvoidingView,
-  Keyboard,
-  StyleSheet,
-  View,
-  ScrollView,
-  Image,
-  TouchableWithoutFeedback,
-  Platform,
-  FlatList,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import _ from 'underscore';
 import dateformat from 'dateformat';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  Layout,
-  Button as UIButton,
-  Spinner,
-  TabView,
-  Icon,
-} from '@ui-kitten/components';
+import {Layout, Spinner, Icon} from '@ui-kitten/components';
 import ClientInfo from '../components/ClientInfo';
 import Text from '../components/Text';
-// import ClientInfo from './Home/components/ClientInfo';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import theme from '../constants/theme';
 import t from '../i18n';
 import {getSessionDetail} from '../redux/actions/session';
@@ -95,7 +78,6 @@ const RideDetail = props => {
               <Text size={13}>
                 {dateformat(data.created_at, 'dd/mm/yyyy hh:MM')}
               </Text>
-              {/* <Text size={13}>28 February 2021 at 9:42am</Text> */}
             </View>
             <View
               style={{
@@ -120,9 +102,6 @@ const RideDetail = props => {
               <Text size={13}>{data.note || '--'}</Text>
             </View>
           </View>
-          {/* <View>
-            <Text size={12} color={theme.color.primary}>This session was towards your area you received Guaranteed fee.</Text>
-          </View> */}
           <View style={theme.block.rowMiddleCenter}>
             {Array(5)
               .fill('')
@@ -164,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    top: Platform.OS === 'ios' ? -75 : 20,
+    top: 20,
     paddingHorizontal: 20,
   },
   section: {

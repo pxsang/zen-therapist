@@ -1,56 +1,27 @@
 import React from 'react';
 import {
   View,
-  Image,
   StyleSheet,
   Dimensions,
   TouchableWithoutFeedback,
-  Platform,
 } from 'react-native';
 import {Layout, Icon} from '@ui-kitten/components';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import theme from '../constants/theme';
+import t from '../i18n';
 import Text from './Text';
 
-const {width, height} = Dimensions.get('screen');
+const {width} = Dimensions.get('screen');
 
 const Header = ({title, navigation}) => {
   const safeArea = useSafeAreaInsets();
-
-  if (Platform.OS === 'ios') {
-    return (
-      <Layout style={{height: 200}}>
-        <View style={styles.backgroundWrapper}>
-          <View style={styles.backgroundContainer}>
-            <Image
-              style={styles.backgroundImage}
-              source={require('../assets/images/Background.png')}
-            />
-          </View>
-        </View>
-        <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
-          <View
-            style={[
-              styles.titleContent,
-              {paddingTop: safeArea.top + 25, paddingHorizontal: 20},
-            ]}>
-            <Icon
-              style={styles.icon}
-              fill="#FFFFFF"
-              name="arrow-back-outline"
-            />
-            <Text style={styles.title}>{title}</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </Layout>
-    );
-  }
 
   return (
     <Layout
       style={{
         paddingTop: safeArea.top,
         backgroundColor: theme.color.primary,
+        zIndex: 999,
       }}>
       <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
         <View

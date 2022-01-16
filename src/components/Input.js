@@ -1,7 +1,8 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import {Text, Input as UIInput} from '@ui-kitten/components';
+import {Input as UIInput} from '@ui-kitten/components';
 import theme from '../constants/theme';
+import Text from './Text';
 
 const Input = ({label, value = '', ...other}) => {
   return (
@@ -36,5 +37,5 @@ const styles = StyleSheet.create({
   },
   placeholder: {
     fontSize: 14,
-  }
+  },
 });

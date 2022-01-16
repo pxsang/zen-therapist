@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {Layout} from '@ui-kitten/components';
 import Text from '../components/Text';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import theme from '../constants/theme';
 import t from '../i18n';
 
@@ -12,8 +12,7 @@ const Terms = props => {
       <Header {...props} title={t('terms')} />
       <Layout style={[styles.container]}>
         <ScrollView
-          style={[theme.block.paddingVertical(20), theme.block.marginTop(20)]}
-        >
+          style={[theme.block.paddingVertical(20), theme.block.marginTop(20)]}>
           <View style={styles.section}>
             <Text size={16}>{t('term_1')}</Text>
           </View>

@@ -2,7 +2,7 @@ import React from 'react';
 import {Linking, StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Layout, Icon} from '@ui-kitten/components';
 import Text from '../components/Text';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import theme from '../constants/theme';
 import t from '../i18n';
 
@@ -11,18 +11,6 @@ const Support = props => {
     <>
       <Header {...props} title={t('support')} />
       <Layout style={[styles.container]}>
-        {/* <TouchableOpacity>
-          <View style={styles.itemContainer}>
-            <View style={theme.block.rowMiddle}>
-              <Icon
-                style={styles.icon}
-                fill={theme.color.primary}
-                name="message-square-outline"
-              />
-              <Text color={theme.color.primary}>{t('chat_with_hq')}</Text>
-            </View>
-          </View>
-        </TouchableOpacity> */}
         <TouchableOpacity
           onPress={() => Linking.openURL(`tel:${'0707269001'}`)}>
           <View style={styles.itemContainer}>

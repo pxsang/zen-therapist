@@ -18,7 +18,6 @@ const Header2 = () => {
   const safeArea = useSafeAreaInsets();
   const navigation = useNavigation();
   const UserState = useSelector(state => state.User);
-  const {userInfo} = UserState;
 
   return (
     <Layout style={styles.container(safeArea)}>
@@ -29,12 +28,6 @@ const Header2 = () => {
               <Icon style={styles.drawerIcon} name="menu-outline" fill="#000" />
             </View>
           </TouchableWithoutFeedback>
-          {/* <Text bold color={theme.color.primary}>
-            VND
-          </Text>
-          <Text bold size={25} style={styles.earned}>
-            912,000
-          </Text> */}
         </View>
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate('Profile')}>

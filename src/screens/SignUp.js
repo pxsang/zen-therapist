@@ -1,30 +1,21 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
-} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import React, {useState, useRef} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {Layout, Icon} from '@ui-kitten/components';
 import Button from '../components/Button';
 import Text from '../components/Text';
 import Image from '../components/Image';
 import GhostButton from '../components/GhostButton';
 import Input from '../components/Input';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import theme from '../constants/theme';
 import {signup} from '../redux/actions/user';
 import {phoneValidator, convertTo0PhoneNumber} from '../helpers/display';
 import t from '../i18n';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const SignUp = props => {
   const dispatch = useDispatch();
-  // const UserState = useSelector(state => state.User);
-  // const {isLoading, isSuccessful, isFailed, errorMessage} = UserState.signup;
   const {navigation} = props;
   let [phoneNumber, setPhoneNumber] = useState('');
   let [isLoading, setLoading] = useState(false);
@@ -32,15 +23,6 @@ const SignUp = props => {
   let [errorMessage, setErrorMessage] = useState('');
 
   const zoomIconRef = useRef();
-
-  // useEffect(() => {
-  //   if (isSuccessful) {
-  //     navigation.navigate('VerifyOTP', {
-  //       type: 'signup',
-  //       phoneNumber: convertTo0PhoneNumber(`+84${phoneNumber}`),
-  //     });
-  //   }
-  // }, [isSuccessful, navigation, phoneNumber]);
 
   const renderCheckMarkIcon = iconProps => (
     <Icon
@@ -103,51 +85,45 @@ const SignUp = props => {
     <>
       <Header {...props} />
       <Layout style={[styles.container]}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'height' : 'height'}
-          style={[styles.container]}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView style={styles.content}>
+        <KeyboardAwareScrollView>
+          <View style={styles.content}>
+            <Text style={styles.greeting}>{t('sign_up__greeting')}</Text>
+            <Text style={styles.title}>{t('sign_up__description')}</Text>
+            <View style={styles.formContainer}>
+              <Input
+                keyboardType="phone-pad"
+                value={phoneNumber}
+                label={t('phone_number')}
+                placeholder={t('enter_your_phone_number')}
+                status={isFailed ? 'danger' : 'basic'}
+                caption={renderError()}
+                accessoryLeft={renderCountryCode}
+                accessoryRight={renderCheckMarkIcon}
+                onChangeText={nextValue => setPhoneNumber(nextValue)}
+              />
+              <View height={20} />
               <View>
-                <Text style={styles.greeting}>{t('sign_up__greeting')}</Text>
-                <Text style={styles.title}>{t('sign_up__description')}</Text>
-                <View style={styles.formContainer}>
-                  <Input
-                    keyboardType="phone-pad"
-                    value={phoneNumber}
-                    label={t('phone_number')}
-                    placeholder={t('enter_your_phone_number')}
-                    status={isFailed ? 'danger' : 'basic'}
-                    caption={renderError()}
-                    accessoryLeft={renderCountryCode}
-                    accessoryRight={renderCheckMarkIcon}
-                    onChangeText={nextValue => setPhoneNumber(nextValue)}
-                  />
-                  <View height={20} />
-                  <View>
-                    <GhostButton onPress={() => navigation.navigate('Terms')}>
-                      <Text>
-                        <Text>{t('sign_up__condition')}</Text>
-                        <Text bold> {t('terms_of_service')}</Text>
-                        <Text> {t('and')} </Text>
-                        <Text bold>{t('privacy_policy')}</Text>
-                      </Text>
-                    </GhostButton>
-                  </View>
-                </View>
+                <GhostButton onPress={() => navigation.navigate('Terms')}>
+                  <Text>
+                    <Text>{t('sign_up__condition')}</Text>
+                    <Text bold> {t('terms_of_service')}</Text>
+                    <Text> {t('and')} </Text>
+                    <Text bold>{t('privacy_policy')}</Text>
+                  </Text>
+                </GhostButton>
               </View>
-              <View style={styles.footer}>
-                <Button
-                  icon="arrow-forward-outline"
-                  isLoading={isLoading}
-                  disabled={!phoneValidator(phoneNumber)}
-                  onPress={handleSignup}>
-                  {t('continue')}
-                </Button>
-              </View>
-            </ScrollView>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+            </View>
+            <View style={styles.footer}>
+              <Button
+                icon="arrow-forward-outline"
+                isLoading={isLoading}
+                disabled={!phoneValidator(phoneNumber)}
+                onPress={handleSignup}>
+                {t('continue')}
+              </Button>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
       </Layout>
     </>
   );

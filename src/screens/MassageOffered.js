@@ -3,7 +3,7 @@ import {StyleSheet, View, ScrollView, RefreshControl} from 'react-native';
 import {Layout, CheckBox} from '@ui-kitten/components';
 import {useDispatch, useSelector} from 'react-redux';
 import Text from '../components/Text';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import theme from '../constants/theme';
 import t from '../i18n';
 import {getServices} from '../redux/actions/service';

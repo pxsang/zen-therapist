@@ -1,15 +1,14 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Alert, Platform} from 'react-native';
+import {StyleSheet, View, ScrollView, Alert} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {Layout} from '@ui-kitten/components';
 import Button from '../components/Button';
 import UserAvatar from '../components/UserAvatar';
 import Text from '../components/Text';
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import theme from '../constants/theme';
 import {logout} from '../redux/actions/user';
 import {
-  experienceFormat,
   priceFormat,
   numberFormat,
   phoneNumberFormat,
@@ -31,27 +30,17 @@ const Profile = props => {
     <>
       <Header title={t('my_account')} {...props} />
       <Layout style={[styles.container]}>
-        {Platform.OS === 'ios' ? (
-          <View style={styles.headerIOS}>
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          <View style={styles.header}>
             <View style={styles.avatarContainer}>
               <UserAvatar style={styles.avatarImage} />
             </View>
           </View>
-        ) : null}
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          {Platform.OS === 'android' ? (
-            <View style={styles.headerAndroid}>
-              <View style={styles.avatarContainer}>
-                <UserAvatar style={styles.avatarImage} />
-              </View>
-            </View>
-          ) : null}
           <View style={styles.section}>
             <Text center style={styles.therapist}>
               {t('therapist')}
             </Text>
             <Text bold center style={styles.fullname}>
-              {/* {getFullName(userInfo.first_name, userInfo.last_name)} */}
               {userInfo.name}
             </Text>
             <Text bold center style={styles.rating}>
@@ -102,7 +91,6 @@ const Profile = props => {
               appearance="rounded"
               isLoading={isLoading}
               onPress={() => {
-                // props.navigation.navigate('Welcome');
                 Alert.alert('Bạn thực sự muốn đăng xuất?', '', [
                   {
                     text: t('cancel'),
@@ -132,8 +120,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    marginTop: Platform.OS === 'ios' ? 71 : 0,
-    paddingVertical: Platform.OS === 'ios' ? 0 : 20,
+    marginTop: 0,
+    paddingVertical: 20,
     flex: 1,
   },
   fullname: {
@@ -165,14 +153,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 18,
   },
-  headerIOS: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    top: -71,
-    height: 142,
-    zIndex: 99,
-  },
-  headerAndroid: {
+  header: {
     height: 142,
     alignItems: 'center',
   },

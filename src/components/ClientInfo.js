@@ -5,8 +5,6 @@ import Text from './Text';
 import theme from '../constants/theme';
 
 const ClientInfo = ({data}) => {
-  const safeArea = useSafeAreaInsets();
-
   const [firstInfo, secondInfo] = data || [];
 
   return (
@@ -26,11 +24,7 @@ const ClientInfo = ({data}) => {
         <View style={theme.block.rowLeft}>
           <View style={styles.dot} />
           <View style={styles.info}>
-            <Text
-              light
-              size={11}
-              color={theme.color.gray}
-              style={styles.label}>
+            <Text light size={11} color={theme.color.gray} style={styles.label}>
               {secondInfo.label}
             </Text>
             <Text bold size={16}>

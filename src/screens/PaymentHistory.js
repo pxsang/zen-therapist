@@ -1,53 +1,38 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {
-  KeyboardAvoidingView,
-  Keyboard,
-  StyleSheet,
-  View,
-  ScrollView,
-  Image,
-  TouchableWithoutFeedback,
-  Platform,
-  FlatList,
-} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, FlatList} from 'react-native';
 import _ from 'underscore';
 import moment from 'moment';
-import {Layout, Button as UIButton, Spinner, Tab, TabBar} from '@ui-kitten/components';
+import {Layout, Spinner, Tab, TabBar} from '@ui-kitten/components';
 import {useDispatch, useSelector} from 'react-redux';
-import { BarChart, XAxis, Grid } from 'react-native-svg-charts'
-import PaymentHistoryBarChart from '../components/PaymentHistoryBarChart';
 import Text from '../components/Text';
-import { Svg, Ellipse, Text as SVGText } from 'react-native-svg'
-import Header from '../components/Header';
+import Header from '../components/Header3';
 import SessionHistoryItem from '../components/SessionHistoryItem';
 import theme from '../constants/theme';
-import * as scale from 'd3-scale';
-
-import sessionHistoryData from '../mock/session-history.json';
 import {numberFormat} from '../helpers/display';
 import t from '../i18n';
 import {getTodayHistory, getWeeklyHistory} from '../redux/actions/session';
 
-const WEEKLY_LABEL = {
-  0: 'M',
-  1: 'T',
-  2: 'W',
-  3: 'T',
-  4: 'F',
-  5: 'S',
-  6: 'S',
-};
+// const WEEKLY_LABEL = {
+//   0: 'M',
+//   1: 'T',
+//   2: 'W',
+//   3: 'T',
+//   4: 'F',
+//   5: 'S',
+//   6: 'S',
+// };
 
 const HISTORY_TYPE = {
   TODAY: 0,
   WEEKLY: 1,
 };
 
-const PaymentHistory = (props) => {
+const PaymentHistory = props => {
   const dispatch = useDispatch();
   const SessionState = useSelector(state => state.Session);
-  const UserState = useSelector(state => state.User);
-  const {history: { isLoading, data }} = SessionState;
+  const {
+    history: {isLoading, data},
+  } = SessionState;
   const [selectedIndex, setSelectedIndex] = useState(HISTORY_TYPE.TODAY);
 
   useEffect(() => {
@@ -56,16 +41,18 @@ const PaymentHistory = (props) => {
     } else {
       dispatch(getWeeklyHistory());
     }
-  }, [selectedIndex]);
+  }, [selectedIndex, dispatch]);
 
-  const fill = '#F2F5F7';
-  // const data = [1450000, 912000, 1100000, 700000, 540000, 1650000, 890000];
+  // const fill = '#F2F5F7';
 
   const getOnlineHrs = onlineMinutes => {
     const hours = Math.floor(onlineMinutes / 60);
     const minutes = onlineMinutes - hours * 60;
 
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(
+      2,
+      '0',
+    )}`;
   };
 
   const renderSummary = () => {
@@ -74,13 +61,13 @@ const PaymentHistory = (props) => {
 
     const totalAmount = _.reduce(
       data,
-      (total, item) => total += item.total_amount,
+      (total, item) => (total += item.total_amount),
       0,
     );
 
     const onlineMinutes = _.reduce(
       data,
-      (total, item) => total += Number(item.request_services[0].duration),
+      (total, item) => (total += Number(item.request_services[0].duration)),
       0,
     );
 
@@ -94,7 +81,9 @@ const PaymentHistory = (props) => {
         ' - ' +
         moment().endOf('week').format('DD/MM/YYYY');
 
-      const historyGroupByDate = _.groupBy(data, item => moment(item.created_at).format('DD/MM/YYYY'));
+      const historyGroupByDate = _.groupBy(data, item =>
+        moment(item.created_at).format('DD/MM/YYYY'),
+      );
       const historyByDate = Object.keys(historyGroupByDate).map(key => ({
         date: key,
         list: historyGroupByDate[key],
@@ -106,12 +95,15 @@ const PaymentHistory = (props) => {
         const date = moment(startOfWeek).add(index, 'day').format('DD/MM/YYYY');
         let totalAmount = 0;
 
-        const historyOfDate = _.find(historyByDate, item => item.date.toString() === date.toString());
+        const historyOfDate = _.find(
+          historyByDate,
+          item => item.date.toString() === date.toString(),
+        );
 
         if (!_.isEmpty(historyOfDate)) {
           totalAmount = _.reduce(
             historyOfDate.list,
-            (total, item) => total += item.total_amount,
+            (total, item) => (total += item.total_amount),
             0,
           );
         }
@@ -122,7 +114,9 @@ const PaymentHistory = (props) => {
 
     return (
       <Layout style={styles.tabContainer}>
-        <Text center size={16} color={theme.color.gray}>{dateText}</Text>
+        <Text center size={16} color={theme.color.gray}>
+          {dateText}
+        </Text>
         <View height={10} />
         {isLoading ? (
           <View style={theme.block.rowCenter}>
@@ -131,8 +125,12 @@ const PaymentHistory = (props) => {
         ) : (
           <>
             <View style={theme.block.rowCenter}>
-              <Text bold color={theme.color.primary}>VND </Text>
-              <Text bold size={25} color={theme.color.primary}>{numberFormat(totalAmount)}</Text>
+              <Text bold color={theme.color.primary}>
+                VND{' '}
+              </Text>
+              <Text bold size={25} color={theme.color.primary}>
+                {numberFormat(totalAmount)}
+              </Text>
             </View>
             <View height={15} />
             {/* {selectedIndex === HISTORY_TYPE.WEEKLY && (
@@ -145,14 +143,12 @@ const PaymentHistory = (props) => {
             )} */}
             <View style={theme.block.blockMiddleBetween}>
               <View style={styles.statisticsItem}>
-                <Text bold size={18}>{data.length}</Text>
+                <Text bold size={18}>
+                  {data.length}
+                </Text>
                 <Text center>Sessions</Text>
               </View>
-              <View
-                style={[
-                  styles.statisticsItem,
-                  styles.statisticsItemLast,
-                ]}>
+              <View style={[styles.statisticsItem, styles.statisticsItemLast]}>
                 <Text bold size={18}>
                   {onlineHrs}
                 </Text>
@@ -162,8 +158,8 @@ const PaymentHistory = (props) => {
           </>
         )}
       </Layout>
-    )
-  }
+    );
+  };
 
   const renderHistory = () => {
     if (isLoading) {
@@ -174,8 +170,8 @@ const PaymentHistory = (props) => {
       return (
         <FlatList
           showsVerticalScrollIndicator={false}
-          style={{ height: '100%' }}
-          contentContainerStyle={{ paddingBottom: 200 }}
+          style={{height: '100%'}}
+          contentContainerStyle={{paddingBottom: 200}}
           data={data}
           renderItem={({item}) => <SessionHistoryItem data={item} />}
           keyExtractor={item => item.id}
@@ -183,7 +179,9 @@ const PaymentHistory = (props) => {
       );
     }
 
-    const historyGroupByDate = _.groupBy(data, item => moment(item.created_at).format('DD/MM/YYYY'));
+    const historyGroupByDate = _.groupBy(data, item =>
+      moment(item.created_at).format('DD/MM/YYYY'),
+    );
     const historyByDate = Object.keys(historyGroupByDate).map(key => ({
       date: key,
       list: historyGroupByDate[key],
@@ -192,14 +190,18 @@ const PaymentHistory = (props) => {
     return (
       <FlatList
         showsVerticalScrollIndicator={false}
-        style={{ height: '100%' }}
-        contentContainerStyle={{ paddingBottom: 200 }}
+        style={{height: '100%'}}
+        contentContainerStyle={{paddingBottom: 200}}
         data={historyByDate}
         renderItem={({item}) => {
           return (
             <FlatList
-              ListHeaderComponent={<Text size={18} bold color={theme.color.primary}>{item.date}</Text>}
-              ListHeaderComponentStyle={{ marginVertical: 10 }}
+              ListHeaderComponent={
+                <Text size={18} bold color={theme.color.primary}>
+                  {item.date}
+                </Text>
+              }
+              ListHeaderComponentStyle={{marginVertical: 10}}
               data={item.list}
               renderItem={({item}) => <SessionHistoryItem data={item} />}
               keyExtractor={item => item.id}
@@ -209,7 +211,7 @@ const PaymentHistory = (props) => {
         keyExtractor={item => item.date}
       />
     );
-  }
+  };
 
   return (
     <>
@@ -277,9 +279,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    top: Platform.OS === 'ios' ? -75 : 0,
     paddingHorizontal: 20,
-    paddingVertical: Platform.OS === 'ios' ? 0 : 20,
+    paddingVertical: 20,
   },
   header: {
     marginBottom: 20,

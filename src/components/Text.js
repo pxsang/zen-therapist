@@ -1,5 +1,5 @@
-import React from 'react'
-import { StyleSheet, Text as RNText, Platform } from 'react-native'
+import React from 'react';
+import {StyleSheet, Text as RNText} from 'react-native';
 
 const Text = ({
   light,
@@ -24,10 +24,12 @@ const Text = ({
 
   if (size) textStyles.push(styles.size(size));
 
-  if (color) textStyles.push({ color });
+  if (color) textStyles.push({color});
 
   return (
-    <RNText {...otherProps} style={textStyles}>{children}</RNText>
+    <RNText {...otherProps} style={textStyles}>
+      {children}
+    </RNText>
   );
 };
 

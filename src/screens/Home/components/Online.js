@@ -3,9 +3,11 @@ import {View} from 'react-native';
 import UserStatistics from '../../../components/UserStatistics';
 import Text from '../../../components/Text';
 import theme from '../../../constants/theme';
-import t from '../../../i18n';
+import useTranslate from '../../../hooks/useTranslate';
 
 const Online = () => {
+  const t = useTranslate();
+
   return (
     <View>
       <Text center bold size={18}>

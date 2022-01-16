@@ -92,9 +92,6 @@ const trackPlayerInit = async () => {
 const MusicPlayer = () => {
   let [isPlaying, setIsPlaying] = useState(false);
   let [isTrackPlayerInit, setIsTrackPlayerInit] = useState(false);
-  // useEffect(() => {
-  //   TrackPlayer.setupPlayer().then(response => console.log('respoinse', response));
-  // }, []);
 
   useTrackPlayerEvents([TrackPlayerEvents.PLAYBACK_STATE], event => {
     if (event.state === STATE_PLAYING) {

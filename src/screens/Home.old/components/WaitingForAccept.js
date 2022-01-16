@@ -5,8 +5,6 @@ import Text from '../../../components/Text';
 import VerticalInfo from '../../../components/VerticalInfo';
 import theme from '../../../constants/theme';
 
-import {STATUS} from '../../../constants/Constants';
-
 const WaitingForAccept = ({onAccept, onReject}) => {
   let [remainingTime, setRemainingTime] = useState(10);
   useEffect(() => {

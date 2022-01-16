@@ -10,7 +10,7 @@ import Animated, {divide, multiply} from 'react-native-reanimated';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import theme from '../constants/theme';
 import {setFirstTime} from '../redux/actions/app';
-import t from '../i18n';
+import useTranslate from '../hooks/useTranslate';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -19,18 +19,29 @@ const Splash = props => {
   const safeArea = useSafeAreaInsets();
   const scroll = useRef(null);
   const x = useValue(0);
+  const t = useTranslate();
   const onScroll = onScrollEvent({x});
+
+  const slides = [
+    {
+      title: t('splash_1__title'),
+      description: t('splash_1__description'),
+      image: require('../assets/images/splash-1.png'),
+    },
+    {
+      title: t('splash_2__title'),
+      description: t('splash_2__description'),
+      image: require('../assets/images/splash-2.png'),
+    },
+    {
+      title: t('splash_3__title'),
+      description: t('splash_3__description'),
+      image: require('../assets/images/splash-3.png'),
+    },
+  ];
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.backgroundWrapper}>
-        <View style={styles.backgroundContainer}>
-          <Image
-            style={styles.backgroundImage}
-            source={require('../assets/images/Background.png')}
-          />
-        </View>
-      </View> */}
       <View style={[styles.slider]}>
         <Animated.View>
           <Animated.ScrollView
@@ -164,21 +175,3 @@ const styles = StyleSheet.create({
     padding: theme.spacing.m,
   },
 });
-
-const slides = [
-  {
-    title: t('splash_1__title'),
-    description: t('splash_1__description'),
-    image: require('../assets/images/splash-1.png'),
-  },
-  {
-    title: t('splash_2__title'),
-    description: t('splash_2__description'),
-    image: require('../assets/images/splash-2.png'),
-  },
-  {
-    title: t('splash_3__title'),
-    description: t('splash_3__description'),
-    image: require('../assets/images/splash-3.png'),
-  },
-];

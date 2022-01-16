@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import _ from 'underscore';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import HomeScreen from '../screens/Home';
 import RideDetailScreen from '../screens/RideDetail';
