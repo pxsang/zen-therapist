@@ -6,12 +6,10 @@ import UserStatistics from '../../../components/UserStatistics';
 import UserInfo from '../../../components/UserInfo';
 import theme from '../../../constants/theme';
 import useTranslate from '../../../hooks/useTranslate';
-import useCalculateRemainingTime from '../../../hooks/useCalculateRemainingTime';
 
 const Offline = ({userInfo, onOnline}) => {
   const t = useTranslate();
-  const {getMeaningTime} = useCalculateRemainingTime();
-  console.log('getMeaningTime', getMeaningTime);
+
   return (
     <View>
       <Text center bold style={styles.statusTitle}>
