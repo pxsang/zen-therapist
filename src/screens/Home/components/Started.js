@@ -1,16 +1,21 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '@ui-kitten/components';
 import Text from '../../../components/Text';
 import theme from '../../../constants/theme';
-import useCalculateRemainingTime from '../../../hooks/useCalculateRemainingTime';
 import useTranslate from '../../../hooks/useTranslate';
 
 const Started = ({sessionDetail, onFinish}) => {
-  const {getMeaningTime} = useCalculateRemainingTime();
   const t = useTranslate();
 
-  let [meaningTime, setMeaningTime] = useState(getMeaningTime(sessionDetail));
+  const getMeaningTime = useCallback(() => {
+    const delta = new Date().getTime() - sessionDetail?.started_at;
+    const remaining =
+      sessionDetail?.request_services[0].duration - delta / 60000;
+
+    return remaining <= 0 ? 0 : Math.ceil(remaining);
+  }, [sessionDetail]);
+  let [meaningTime, setMeaningTime] = useState(getMeaningTime());
 
   useEffect(() => {
     let interval = setInterval(() => {

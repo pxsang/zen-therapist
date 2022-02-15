@@ -16,7 +16,7 @@ const UserStatistics = () => {
       <View style={styles.item}>
         <VerticalInfo
           label={t('acceptance')}
-          value={percentFormat(95 / 100)}
+          value={percentFormat(userInfo?.acceptance || 100)}
           icon={require('../assets/icons/acceptance.png')}
         />
       </View>
@@ -30,7 +30,7 @@ const UserStatistics = () => {
       <View style={styles.item}>
         <VerticalInfo
           label={t('cancellation')}
-          value={percentFormat(2 / 100)}
+          value={percentFormat(userInfo?.rating || 0)}
           icon={require('../assets/icons/cancellation.png')}
         />
       </View>
